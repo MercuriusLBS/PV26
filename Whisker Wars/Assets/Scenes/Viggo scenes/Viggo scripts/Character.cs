@@ -2,29 +2,54 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    // Startvärde på hälsa, kan justeras i Unity Inspector
-    [SerializeField] private int _health = 100;
+    [Header("Stats")]
+    [SerializeField] private int _maxHealth = 100;
+    [SerializeField] private int _attack = 10;
+    [SerializeField] private string _characterName = "Character";
 
-    public int Health
+    private int _currentHealth;
+
+    public int MaxHealth => _maxHealth;
+    public int CurrentHealth => _currentHealth;
+    public int Attack => _attack;
+    public string CharacterName => _characterName;
+
+    public bool IsAlive => _currentHealth > 0;
+
+    private void Awake()
     {
-        get { return _health; }
-        set
-        {
-            _health = Mathf.Clamp(value, 0, 100); // Hindra att det går under 0 eller över 100
+        _currentHealth = _maxHealth;
+    }
 
-            if (_health == 0)
-            {
-                Die();
-            }
+    public virtual void TakeDamage(int amount)
+    {
+        _currentHealth = Mathf.Clamp(_currentHealth - amount, 0, _maxHealth);
+        
+        if (_currentHealth <= 0)
+        {
+            Die();
         }
     }
-    public virtual void takeDamage(int amount)
+
+    public virtual void Heal(int amount)
     {
-        Health -= amount;
+        _currentHealth = Mathf.Clamp(_currentHealth + amount, 0, _maxHealth);
+    }
+
+    public virtual void ResetHealth()
+    {
+        _currentHealth = _maxHealth;
     }
 
     protected virtual void Die()
     {
-        Destroy(gameObject);
+        // Override in derived classes if needed
+        // Don't destroy here - let BattleManager handle it
+    }
+
+    // Get health as percentage (0-1) for UI sliders
+    public float GetHealthPercentage()
+    {
+        return (float)_currentHealth / _maxHealth;
     }
 }
