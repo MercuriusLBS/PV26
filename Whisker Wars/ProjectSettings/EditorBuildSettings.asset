@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Svante scenes/SvanteScene.unity
     guid: 7444198a5de2c474e9bb78deb49ddee5
+  - enabled: 1
+    path: Assets/Scenes/Svante scenes/PauseMenu.unity
+    guid: 1dfef1cbc1758b1498a2ff0bfe050b71
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
