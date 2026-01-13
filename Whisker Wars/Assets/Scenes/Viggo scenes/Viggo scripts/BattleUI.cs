@@ -14,9 +14,16 @@ public class BattleUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI enemyHealthText;
     [SerializeField] private TextMeshProUGUI enemyNameText;
 
-    [Header("Action Menu")]
-    [SerializeField] private GameObject actionMenuPanel;
+    [Header("Main Action Menu")]
+    [SerializeField] private GameObject mainActionMenuPanel;
+    [SerializeField] private Button abilitiesButton;
+
+    [Header("Abilities Submenu")]
+    [SerializeField] private GameObject abilitiesSubmenuPanel;
     [SerializeField] private Button attackButton;
+    [SerializeField] private Button specialAttackButton;
+    [SerializeField] private Button defenseButton;
+    [SerializeField] private Button backButton; // Button to go back to main menu
 
     [Header("Battle Log")]
     [SerializeField] private TextMeshProUGUI battleLogText;
@@ -34,7 +41,17 @@ public class BattleUI : MonoBehaviour
 
     private void Start()
     {
-        // Connect attack button to BattleManager
+        // Connect main menu button
+        if (abilitiesButton != null)
+        {
+            abilitiesButton.onClick.AddListener(OnAbilitiesButtonClicked);
+        }
+        else
+        {
+            Debug.LogWarning("Abilities button not assigned in BattleUI!");
+        }
+
+        // Connect ability buttons
         if (attackButton != null)
         {
             attackButton.onClick.AddListener(OnAttackButtonClicked);
@@ -44,7 +61,40 @@ public class BattleUI : MonoBehaviour
             Debug.LogWarning("Attack button not assigned in BattleUI!");
         }
 
-        // Initialize UI
+        if (specialAttackButton != null)
+        {
+            specialAttackButton.onClick.AddListener(OnSpecialAttackButtonClicked);
+        }
+        else
+        {
+            Debug.LogWarning("Special Attack button not assigned in BattleUI!");
+        }
+
+        if (defenseButton != null)
+        {
+            defenseButton.onClick.AddListener(OnDefenseButtonClicked);
+        }
+        else
+        {
+            Debug.LogWarning("Defense button not assigned in BattleUI!");
+        }
+
+        if (backButton != null)
+        {
+            backButton.onClick.AddListener(OnBackButtonClicked);
+        }
+
+        // Initialize UI - start with main menu visible, submenu hidden
+        if (mainActionMenuPanel != null)
+        {
+            mainActionMenuPanel.SetActive(true);
+        }
+        if (abilitiesSubmenuPanel != null)
+        {
+            abilitiesSubmenuPanel.SetActive(false);
+        }
+
+        // Initialize health bars
         if (battleManager != null && battleManager.Player != null && battleManager.Enemy != null)
         {
             UpdateHealthBars(battleManager.Player, battleManager.Enemy);
@@ -88,14 +138,44 @@ public class BattleUI : MonoBehaviour
 
     public void SetActionMenuActive(bool active)
     {
-        if (actionMenuPanel != null)
+        if (mainActionMenuPanel != null)
         {
-            actionMenuPanel.SetActive(active);
+            mainActionMenuPanel.SetActive(active);
         }
 
-        if (attackButton != null)
+        if (abilitiesButton != null)
         {
-            attackButton.interactable = active;
+            abilitiesButton.interactable = active;
+        }
+
+        // Hide submenu when disabling main menu
+        if (!active && abilitiesSubmenuPanel != null)
+        {
+            abilitiesSubmenuPanel.SetActive(false);
+        }
+    }
+
+    private void ShowMainMenu()
+    {
+        if (mainActionMenuPanel != null)
+        {
+            mainActionMenuPanel.SetActive(true);
+        }
+        if (abilitiesSubmenuPanel != null)
+        {
+            abilitiesSubmenuPanel.SetActive(false);
+        }
+    }
+
+    private void ShowAbilitiesSubmenu()
+    {
+        if (mainActionMenuPanel != null)
+        {
+            mainActionMenuPanel.SetActive(false);
+        }
+        if (abilitiesSubmenuPanel != null)
+        {
+            abilitiesSubmenuPanel.SetActive(true);
         }
     }
 
@@ -111,6 +191,16 @@ public class BattleUI : MonoBehaviour
         }
     }
 
+    private void OnAbilitiesButtonClicked()
+    {
+        ShowAbilitiesSubmenu();
+    }
+
+    private void OnBackButtonClicked()
+    {
+        ShowMainMenu();
+    }
+
     private void OnAttackButtonClicked()
     {
         if (battleManager != null)
@@ -119,12 +209,44 @@ public class BattleUI : MonoBehaviour
         }
     }
 
+    private void OnSpecialAttackButtonClicked()
+    {
+        if (battleManager != null)
+        {
+            battleManager.PlayerSpecialAttack();
+        }
+    }
+
+    private void OnDefenseButtonClicked()
+    {
+        if (battleManager != null)
+        {
+            battleManager.PlayerDefend();
+        }
+    }
+
     private void OnDestroy()
     {
-        // Clean up button listener
+        // Clean up button listeners
+        if (abilitiesButton != null)
+        {
+            abilitiesButton.onClick.RemoveListener(OnAbilitiesButtonClicked);
+        }
         if (attackButton != null)
         {
             attackButton.onClick.RemoveListener(OnAttackButtonClicked);
+        }
+        if (specialAttackButton != null)
+        {
+            specialAttackButton.onClick.RemoveListener(OnSpecialAttackButtonClicked);
+        }
+        if (defenseButton != null)
+        {
+            defenseButton.onClick.RemoveListener(OnDefenseButtonClicked);
+        }
+        if (backButton != null)
+        {
+            backButton.onClick.RemoveListener(OnBackButtonClicked);
         }
     }
 }
