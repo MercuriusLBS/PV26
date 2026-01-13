@@ -24,7 +24,13 @@ public class PlayerMovement : MonoBehaviour
                 vertical += 1f;
         }
 
-        // Calculate movement direction
+        // Prevent diagonal movement - prioritize horizontal over vertical
+        if (horizontal != 0f)
+        {
+            vertical = 0f;
+        }
+
+        // Calculate movement direction (only X or Y, never both)
         Vector3 movement = new Vector3(horizontal, vertical, 0f);
 
         // Move the player at constant speed
