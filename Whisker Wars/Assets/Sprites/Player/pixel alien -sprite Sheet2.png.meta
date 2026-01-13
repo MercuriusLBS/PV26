@@ -1,31 +1,31 @@
 fileFormatVersion: 2
-guid: 393575f9bd6b79e459b5dd66225286b5
+guid: 9da8e15a36f53bb49a2c00a3f610f6b4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5882616593080387909
-    second: pixel alien -sprite Sheet_0
+      213: -2579520703679673511
+    second: pixel alien -sprite Sheet2_0
   - first:
-      213: 2046211369729772568
-    second: pixel alien -sprite Sheet_1
+      213: -7583110870966571041
+    second: pixel alien -sprite Sheet2_1
   - first:
-      213: 1630192047390238777
-    second: pixel alien -sprite Sheet_2
+      213: -790766104481072133
+    second: pixel alien -sprite Sheet2_2
   - first:
-      213: -9085224508882406428
-    second: pixel alien -sprite Sheet_3
+      213: 2850991688888464744
+    second: pixel alien -sprite Sheet2_3
   - first:
-      213: 8606031687807428658
-    second: pixel alien -sprite Sheet_4
+      213: -2913751023306394230
+    second: pixel alien -sprite Sheet2_4
   - first:
-      213: -8085012644100790720
-    second: pixel alien -sprite Sheet_5
+      213: 4485246627152180137
+    second: pixel alien -sprite Sheet2_5
   - first:
-      213: -5518446392068731701
-    second: pixel alien -sprite Sheet_6
+      213: 6000971555579085245
+    second: pixel alien -sprite Sheet2_6
   - first:
-      213: -7690808272084478724
-    second: pixel alien -sprite Sheet_7
+      213: 5768646512109894845
+    second: pixel alien -sprite Sheet2_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -69,7 +69,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 32
@@ -96,7 +96,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -134,177 +134,177 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pixel alien -sprite Sheet_0
+      name: pixel alien -sprite Sheet2_0
       rect:
         serializedVersion: 2
-        x: 2
-        y: 1
-        width: 28
-        height: 27
+        x: 0
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 549006cbf9043a150800000000000000
-      internalID: 5882616593080387909
+      spriteID: 95b486e3693b33cd0800000000000000
+      internalID: -2579520703679673511
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pixel alien -sprite Sheet_1
+      name: pixel alien -sprite Sheet2_1
       rect:
         serializedVersion: 2
-        x: 34
-        y: 1
-        width: 28
-        height: 27
+        x: 32
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 81ccb14466a956c10800000000000000
-      internalID: 2046211369729772568
+      spriteID: fdf62a307d063c690800000000000000
+      internalID: -7583110870966571041
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pixel alien -sprite Sheet_2
+      name: pixel alien -sprite Sheet2_2
       rect:
         serializedVersion: 2
-        x: 66
-        y: 1
-        width: 28
-        height: 27
+        x: 64
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 938ac5ca70b9f9610800000000000000
-      internalID: 1630192047390238777
+      spriteID: bfb7cf9ea62a605f0800000000000000
+      internalID: -790766104481072133
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pixel alien -sprite Sheet_3
+      name: pixel alien -sprite Sheet2_3
       rect:
         serializedVersion: 2
-        x: 98
-        y: 1
-        width: 28
-        height: 28
+        x: 96
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4e3346bd17ccae180800000000000000
-      internalID: -9085224508882406428
+      spriteID: 865b9c9f5d1c09720800000000000000
+      internalID: 2850991688888464744
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pixel alien -sprite Sheet_4
+      name: pixel alien -sprite Sheet2_4
       rect:
         serializedVersion: 2
-        x: 130
-        y: 1
-        width: 28
-        height: 27
+        x: 128
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 238648d2934ce6770800000000000000
-      internalID: 8606031687807428658
+      spriteID: a8534ebc1e64097d0800000000000000
+      internalID: -2913751023306394230
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pixel alien -sprite Sheet_5
+      name: pixel alien -sprite Sheet2_5
       rect:
         serializedVersion: 2
-        x: 162
-        y: 1
-        width: 28
-        height: 27
+        x: 160
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 046a4df16d34ccf80800000000000000
-      internalID: -8085012644100790720
+      spriteID: 9a3bc652b0cce3e30800000000000000
+      internalID: 4485246627152180137
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pixel alien -sprite Sheet_6
+      name: pixel alien -sprite Sheet2_6
       rect:
         serializedVersion: 2
-        x: 194
-        y: 1
-        width: 28
-        height: 27
+        x: 192
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bcc05b09e3a8a63b0800000000000000
-      internalID: -5518446392068731701
+      spriteID: db1c385d5dbb74350800000000000000
+      internalID: 6000971555579085245
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pixel alien -sprite Sheet_7
+      name: pixel alien -sprite Sheet2_7
       rect:
         serializedVersion: 2
-        x: 226
-        y: 1
-        width: 28
-        height: 27
+        x: 224
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cf4d4cacf92c44590800000000000000
-      internalID: -7690808272084478724
+      spriteID: dbc3b1d60795e0050800000000000000
+      internalID: 5768646512109894845
       vertices: []
       indices: 
       edges: []
@@ -313,7 +313,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -321,16 +321,18 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      pixel alien -sprite Sheet_0: 5882616593080387909
-      pixel alien -sprite Sheet_1: 2046211369729772568
-      pixel alien -sprite Sheet_2: 1630192047390238777
-      pixel alien -sprite Sheet_3: -9085224508882406428
-      pixel alien -sprite Sheet_4: 8606031687807428658
-      pixel alien -sprite Sheet_5: -8085012644100790720
-      pixel alien -sprite Sheet_6: -5518446392068731701
-      pixel alien -sprite Sheet_7: -7690808272084478724
+      pixel alien -sprite Sheet2_0: -2579520703679673511
+      pixel alien -sprite Sheet2_1: -7583110870966571041
+      pixel alien -sprite Sheet2_2: -790766104481072133
+      pixel alien -sprite Sheet2_3: 2850991688888464744
+      pixel alien -sprite Sheet2_4: -2913751023306394230
+      pixel alien -sprite Sheet2_5: 4485246627152180137
+      pixel alien -sprite Sheet2_6: 6000971555579085245
+      pixel alien -sprite Sheet2_7: 5768646512109894845
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
