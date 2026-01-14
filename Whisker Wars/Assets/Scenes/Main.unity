@@ -383,7 +383,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2579520703679673511, guid: 9da8e15a36f53bb49a2c00a3f610f6b4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -545,9 +545,9 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.00011947751
+    x: 0.00026246905
     y: 0
-    width: 0.99976104
+    width: 0.99947506
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
@@ -628,6 +628,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8243482fa28ed60488cd86348470da4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FixedAspectRatioCamera
+  targetWidth: 256
+  targetHeight: 160
+  pixelsPerUnit: 32
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
