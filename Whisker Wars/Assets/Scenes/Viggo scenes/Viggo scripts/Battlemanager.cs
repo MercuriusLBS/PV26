@@ -20,6 +20,9 @@ public class Battlemanager : MonoBehaviour
     private BattleState currentState = BattleState.PlayerTurn;
     private BattleUI battleUI;
 
+    // Special attack cooldown (in player turns)
+    private int playerSpecialCooldownTurns = 0;
+
     // Attack result structure
     private struct AttackResult
     {
@@ -55,9 +58,10 @@ public class Battlemanager : MonoBehaviour
             return;
         }
 
-        // Reset health if needed
+        // Reset health and cooldowns if needed
         player.ResetHealth();
         enemy.ResetHealth();
+        playerSpecialCooldownTurns = 0;
 
         currentState = BattleState.PlayerTurn;
         
@@ -190,7 +194,13 @@ public class Battlemanager : MonoBehaviour
         // Switch back to player turn
         yield return new WaitForSeconds(turnDelay);
         currentState = BattleState.PlayerTurn;
-        
+
+        // Reduce special attack cooldown at the start of player's turn
+        if (playerSpecialCooldownTurns > 0)
+        {
+            playerSpecialCooldownTurns--;
+        }
+
         if (battleUI != null)
         {
             battleUI.SetActionMenuActive(true);
@@ -202,6 +212,18 @@ public class Battlemanager : MonoBehaviour
         if (currentState != BattleState.PlayerTurn)
         {
             Debug.LogWarning("Not player's turn!");
+            return;
+        }
+
+        // Check cooldown
+        if (playerSpecialCooldownTurns > 0)
+        {
+            string cooldownMessage = $"{player.CharacterName}'s special attack is on cooldown for {playerSpecialCooldownTurns} more turn(s)!";
+            Debug.Log(cooldownMessage);
+            if (battleUI != null)
+            {
+                battleUI.ShowBattleLog(cooldownMessage);
+            }
             return;
         }
 
@@ -234,6 +256,9 @@ public class Battlemanager : MonoBehaviour
                 battleUI.ShowBattleLog(message);
             }
         }
+
+        // Put special attack on cooldown (3 player turns)
+        playerSpecialCooldownTurns = 3;
 
         // Check if enemy is defeated
         if (!enemy.IsAlive)

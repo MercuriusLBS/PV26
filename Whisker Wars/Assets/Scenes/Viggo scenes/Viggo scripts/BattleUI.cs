@@ -27,8 +27,10 @@ public class BattleUI : MonoBehaviour
 
     [Header("Battle Log")]
     [SerializeField] private TextMeshProUGUI battleLogText;
+    [SerializeField] private float battleLogDisplayTime = 2f; // Seconds before log is cleared
 
     private Battlemanager battleManager;
+    private Coroutine clearLogCoroutine;
 
     private void Awake()
     {
@@ -184,6 +186,13 @@ public class BattleUI : MonoBehaviour
         if (battleLogText != null)
         {
             battleLogText.text = message;
+
+            // Restart auto-clear timer
+            if (clearLogCoroutine != null)
+            {
+                StopCoroutine(clearLogCoroutine);
+            }
+            clearLogCoroutine = StartCoroutine(ClearBattleLogAfterDelay());
         }
         else
         {
@@ -248,5 +257,22 @@ public class BattleUI : MonoBehaviour
         {
             backButton.onClick.RemoveListener(OnBackButtonClicked);
         }
+
+        if (clearLogCoroutine != null)
+        {
+            StopCoroutine(clearLogCoroutine);
+        }
+    }
+
+    private System.Collections.IEnumerator ClearBattleLogAfterDelay()
+    {
+        yield return new WaitForSeconds(battleLogDisplayTime);
+
+        if (battleLogText != null)
+        {
+            battleLogText.text = string.Empty;
+        }
+
+        clearLogCoroutine = null;
     }
 }
