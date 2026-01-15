@@ -38,15 +38,40 @@ public class Battlemanager : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("[BattleManager] Awake called");
+        
         battleUI = FindFirstObjectByType<BattleUI>();
         if (battleUI == null)
         {
-            Debug.LogWarning("BattleUI not found! UI updates will not work.");
+            Debug.LogWarning("[BattleManager] BattleUI not found! UI updates will not work.");
+        }
+        else
+        {
+            Debug.Log("[BattleManager] BattleUI found");
+        }
+
+        // Check for EncounterManager
+        if (EncounterManager.Instance == null)
+        {
+            Debug.LogWarning("[BattleManager] EncounterManager.Instance is NULL!");
+        }
+        else
+        {
+            Debug.Log("[BattleManager] EncounterManager.Instance found");
+            if (EncounterManager.Instance.CurrentEnemyData == null)
+            {
+                Debug.LogWarning("[BattleManager] EncounterManager has no CurrentEnemyData!");
+            }
+            else
+            {
+                Debug.Log($"[BattleManager] EncounterManager has EnemyData: {EncounterManager.Instance.CurrentEnemyData.enemyName}");
+            }
         }
     }
 
     private void Start()
     {
+        Debug.Log("[BattleManager] Start called - calling StartBattle");
         StartBattle();
     }
 
@@ -56,6 +81,41 @@ public class Battlemanager : MonoBehaviour
         {
             Debug.LogError("Player or Enemy not assigned in BattleManager!");
             return;
+        }
+
+        // Configure enemy from EncounterManager if available
+        Debug.Log("[BattleManager] Checking EncounterManager for enemy data...");
+        
+        if (EncounterManager.Instance == null)
+        {
+            Debug.LogError("[BattleManager] EncounterManager.Instance is NULL!");
+        }
+        else
+        {
+            Debug.Log("[BattleManager] EncounterManager.Instance exists");
+            
+            if (EncounterManager.Instance.CurrentEnemyData == null)
+            {
+                Debug.LogError("[BattleManager] EncounterManager.CurrentEnemyData is NULL!");
+            }
+            else
+            {
+                Debug.Log($"[BattleManager] Found EnemyData: {EncounterManager.Instance.CurrentEnemyData.enemyName}");
+            }
+        }
+        
+        if (EncounterManager.Instance != null && EncounterManager.Instance.CurrentEnemyData != null)
+        {
+            EnemyData enemyData = EncounterManager.Instance.CurrentEnemyData;
+            Debug.Log($"[BattleManager] Configuring enemy from EnemyData: {enemyData.enemyName}");
+            Debug.Log($"[BattleManager] Enemy stats - HP: {enemyData.maxHealth}, Attack: {enemyData.attack}");
+            
+            enemy.ConfigureFromEnemyData(enemyData);
+            Debug.Log($"[BattleManager] Enemy configured successfully from EncounterManager: {enemyData.enemyName}");
+        }
+        else
+        {
+            Debug.LogWarning("[BattleManager] No EncounterManager or EnemyData found - using default enemy stats");
         }
 
         // Reset health and cooldowns if needed
@@ -369,6 +429,8 @@ public class Battlemanager : MonoBehaviour
 
     private void EndBattle(bool playerWon)
     {
+        Debug.Log($"[BattleManager] EndBattle called - Player won: {playerWon}");
+        
         currentState = BattleState.BattleEnd;
 
         if (battleUI != null)
@@ -378,7 +440,7 @@ public class Battlemanager : MonoBehaviour
 
         if (playerWon)
         {
-            Debug.Log($"{player.CharacterName} wins the battle!");
+            Debug.Log($"[BattleManager] {player.CharacterName} wins the battle!");
             if (battleUI != null)
             {
                 battleUI.ShowBattleLog($"{player.CharacterName} wins!");
@@ -386,14 +448,25 @@ public class Battlemanager : MonoBehaviour
         }
         else
         {
-            Debug.Log($"{enemy.CharacterName} wins the battle!");
+            Debug.Log($"[BattleManager] {enemy.CharacterName} wins the battle!");
             if (battleUI != null)
             {
                 battleUI.ShowBattleLog($"{enemy.CharacterName} wins!");
             }
         }
 
-        // Here you can add: return to overworld, give rewards, etc.
+        // Notify EncounterManager about battle result and return to overworld
+        Debug.Log("[BattleManager] Checking for EncounterManager to end encounter...");
+        
+        if (EncounterManager.Instance != null)
+        {
+            Debug.Log("[BattleManager] EncounterManager.Instance found - calling EndEncounter");
+            EncounterManager.Instance.EndEncounter(playerWon);
+        }
+        else
+        {
+            Debug.LogError("[BattleManager] EncounterManager not found - cannot return to overworld automatically");
+        }
     }
 
     // Public method to restart battle (useful for testing)
