@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddbbef432ea64f141830b57c01d9b8d4, type: 3}
+  m_Name: CatData2
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  enemyName: ds
+  enemySprite: {fileID: -5869902636579892736, guid: 02edec07a08ec994b9a0606362eb284a, type: 3}
+  enemyAnimatorController: {fileID: 0}
+  maxHealth: 100
+  attack: 50
+  evasionChance: 20
+  criticalHitChance: 15
+  criticalHitMultiplier: 2
+  damageVariance: 0.2
+  specialAttackMultiplier: 2
+  specialAttackAccuracy: 50
+  guardDamageReduction: 0.85

@@ -6,6 +6,12 @@ public class EnemyData : ScriptableObject
     [Header("Basic Info")]
     public string enemyName = "Enemy";
     
+    [Header("Visuals")]
+    [Tooltip("Sprite for this enemy type")]
+    public Sprite enemySprite;
+    [Tooltip("Animator Controller for this enemy type (optional)")]
+    public RuntimeAnimatorController enemyAnimatorController;
+    
     [Header("Stats")]
     public int maxHealth = 100;
     public int attack = 10;
