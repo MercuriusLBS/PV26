@@ -831,7 +831,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80dc1a21b374d0342a45c06da05eb173, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Battlemanager
-  player: {fileID: 2633204267136056494, guid: 5e5e2a49af5b2e1489ecc6a663064ad5, type: 3}
+  player: {fileID: 1372157541}
   enemy: {fileID: 711947612171124979, guid: c8ee98eddbd871c408f848c2971e5069, type: 3}
   turnDelay: 1
 --- !u!4 &171916063
@@ -1197,7 +1197,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1943172788279921703, guid: c8ee98eddbd871c408f848c2971e5069, type: 3}
       propertyPath: m_Name
-      value: Billy badass
+      value: Enemy2
       objectReference: {fileID: 0}
     - target: {fileID: 3962305250315342053, guid: c8ee98eddbd871c408f848c2971e5069, type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.x
@@ -1734,7 +1734,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: ee4a114a1bf2afb4fa0a398879ec4d63, type: 2}
     - target: {fileID: 3838734940847005515, guid: d321b701cbbdae347a32a5524fbdfa66, type: 3}
       propertyPath: m_Name
-      value: ds
+      value: Enemy3
       objectReference: {fileID: 0}
     - target: {fileID: 5943233792516746278, guid: d321b701cbbdae347a32a5524fbdfa66, type: 3}
       propertyPath: m_Sprite
@@ -2242,7 +2242,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 051f88a0f7e314e4e8529b7a20b4b3bb, type: 2}
     - target: {fileID: 7550601310630724111, guid: 3785d17e7249c934ea009517a966560f, type: 3}
       propertyPath: m_Name
-      value: Feral feline
+      value: Enemy1
       objectReference: {fileID: 0}
     - target: {fileID: 7811848873606626423, guid: 3785d17e7249c934ea009517a966560f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2491,6 +2491,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5e5e2a49af5b2e1489ecc6a663064ad5, type: 3}
+--- !u!114 &1372157541 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2633204267136056494, guid: 5e5e2a49af5b2e1489ecc6a663064ad5, type: 3}
+  m_PrefabInstance: {fileID: 1372157540}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8172dcedbdee03946a848429e94e543f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Character
 --- !u!1 &1387316064
 GameObject:
   m_ObjectHideFlags: 0

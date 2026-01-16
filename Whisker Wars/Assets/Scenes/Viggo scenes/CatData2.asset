@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddbbef432ea64f141830b57c01d9b8d4, type: 3}
   m_Name: CatData2
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  enemyName: ds
-  enemySprite: {fileID: -2211521708840350790, guid: 14b2bae3129b7874ea99f1fc987fbe10, type: 3}
+  enemyName: Enemy2
+  enemySprite: {fileID: 0}
   enemyAnimatorController: {fileID: 0}
   maxHealth: 100
-  attack: 50
+  attack: 15
   evasionChance: 20
   criticalHitChance: 15
   criticalHitMultiplier: 2

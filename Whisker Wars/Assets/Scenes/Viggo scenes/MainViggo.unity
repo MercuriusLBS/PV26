@@ -23615,7 +23615,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1943172788279921703, guid: c8ee98eddbd871c408f848c2971e5069, type: 3}
       propertyPath: m_Name
-      value: Enemy1Prefab
+      value: Enemy2Prefab
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -23632,7 +23632,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7550601310630724111, guid: 3785d17e7249c934ea009517a966560f, type: 3}
       propertyPath: m_Name
-      value: Enemy3Prefab
+      value: Enemy1Prefab
       objectReference: {fileID: 0}
     - target: {fileID: 7811848873606626423, guid: 3785d17e7249c934ea009517a966560f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -23733,7 +23733,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3838734940847005515, guid: d321b701cbbdae347a32a5524fbdfa66, type: 3}
       propertyPath: m_Name
-      value: Enemy2Prefab
+      value: Enemy3Prefab
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -4,6 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Viggo scenes/MainViggo.unity
+    guid: f8efb4eb0a18a3943aecf7973c4e26b4
+  - enabled: 1
+    path: Assets/Scenes/Viggo scenes/Viggo turnbasedscene.unity
+    guid: 575d0bcfb1dba4844a657b6503658d83
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

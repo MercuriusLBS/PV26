@@ -102,21 +102,36 @@ public class Battlemanager : MonoBehaviour
             Character[] allCharacters = FindObjectsByType<Character>(FindObjectsSortMode.None);
             Character foundEnemy = null;
             
-            // Hide all enemies first
+            // Helper method to check if a character is the player
+            bool IsPlayer(Character character)
+            {
+                if (character == null || player == null) return false;
+                // Check by reference, GameObject reference, name, or tag
+                return character == player || 
+                       character.gameObject == player.gameObject ||
+                       character.gameObject.name == player.gameObject.name ||
+                       character.gameObject.CompareTag("Player");
+            }
+            
+            // Hide all enemies first (but never hide the player)
             foreach (Character character in allCharacters)
             {
-                if (character != player)
+                if (!IsPlayer(character))
                 {
                     // This is an enemy - hide it
                     character.gameObject.SetActive(false);
                     Debug.Log($"[BattleManager] Hiding enemy GameObject: {character.gameObject.name}");
+                }
+                else
+                {
+                    Debug.Log($"[BattleManager] Skipping player GameObject: {character.gameObject.name}");
                 }
             }
             
             // Find the enemy that matches the EnemyData name
             foreach (Character character in allCharacters)
             {
-                if (character != player)
+                if (!IsPlayer(character))
                 {
                     // Match by GameObject name or Character name with EnemyData name
                     // Try matching GameObject name first, then Character name
@@ -135,7 +150,7 @@ public class Battlemanager : MonoBehaviour
             {
                 foreach (Character character in allCharacters)
                 {
-                    if (character != player)
+                    if (!IsPlayer(character))
                     {
                         // Try partial match (e.g., "Enemy1" matches "Enemy1" or "Enemy1Prefab")
                         string gameObjectName = character.gameObject.name.ToLower();
@@ -156,7 +171,7 @@ public class Battlemanager : MonoBehaviour
             {
                 foreach (Character character in allCharacters)
                 {
-                    if (character != player)
+                    if (!IsPlayer(character))
                     {
                         foundEnemy = character;
                         Debug.LogWarning($"[BattleManager] No exact match found - using first enemy: {character.gameObject.name}");
@@ -269,6 +284,9 @@ public class Battlemanager : MonoBehaviour
         
         // Wait for visual feedback
         yield return new WaitForSeconds(turnDelay);
+
+        // Play enemy attack animation
+        yield return StartCoroutine(PlayEnemyAttackAnimationCoroutine());
 
         // Perform attack with all combat mechanics
         AttackResult result = PerformAttack(enemy, player);
@@ -617,6 +635,132 @@ public class Battlemanager : MonoBehaviour
 
         // Log enemy position for debugging
         Debug.Log($"[BattleManager] Enemy position: {enemyObject.transform.position}, Active: {enemyObject.activeSelf}, Visible: {(spriteRenderer != null ? spriteRenderer.enabled : "N/A")}");
+    }
+
+    /// <summary>
+    /// Coroutine to play the enemy attack animation
+    /// </summary>
+    private IEnumerator PlayEnemyAttackAnimationCoroutine()
+    {
+        if (enemy == null)
+        {
+            Debug.LogWarning("[BattleManager] Cannot play enemy attack animation - enemy is null");
+            yield break;
+        }
+
+        // Get the Animator component from the enemy GameObject
+        Animator animator = enemy.GetComponent<Animator>();
+        if (animator == null)
+        {
+            // Try to get it from children
+            animator = enemy.GetComponentInChildren<Animator>();
+        }
+
+        if (animator == null)
+        {
+            Debug.LogWarning($"[BattleManager] Enemy {enemy.gameObject.name} has no Animator component - skipping attack animation");
+            yield break;
+        }
+
+        // Check if animator is enabled
+        if (!animator.enabled)
+        {
+            Debug.LogWarning($"[BattleManager] Animator on {enemy.gameObject.name} is disabled! Enabling it...");
+            animator.enabled = true;
+        }
+
+        // Get the enemy number from EnemyData or enemy name
+        int enemyNumber = GetEnemyNumber();
+        if (enemyNumber <= 0)
+        {
+            Debug.LogWarning($"[BattleManager] Could not determine enemy number from name: {enemy.CharacterName} - skipping attack animation");
+            yield break;
+        }
+
+        // Play the attack animation
+        string animationName = $"Enemy {enemyNumber} Attack";
+        Debug.Log($"[BattleManager] Playing attack animation: {animationName}");
+        
+        // Play the animation by state name (no try-catch needed as Play() doesn't throw exceptions)
+        animator.Play(animationName, 0, 0f);
+        
+        // Wait a frame for the animation to start
+        yield return null;
+        
+        // Wait for the animation to complete
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        float animationLength = stateInfo.length;
+        
+        // If animation length is 0 or very small, it might not have found the animation
+        if (animationLength <= 0.01f)
+        {
+            Debug.LogWarning($"[BattleManager] Animation '{animationName}' might not exist or is very short. Using default wait time.");
+            animationLength = 0.5f;
+        }
+        
+        // Wait for the animation to finish (with a minimum wait time)
+        yield return new WaitForSeconds(Mathf.Max(animationLength, 0.5f));
+        
+        Debug.Log($"[BattleManager] Attack animation completed: {animationName}");
+    }
+
+    /// <summary>
+    /// Extracts the enemy number from the enemy's name or EnemyData (e.g., "Enemy 1" -> 1, "Enemy2" -> 2, "Enemy 3" -> 3)
+    /// </summary>
+    private int GetEnemyNumber()
+    {
+        // First, try to get from EnemyData
+        if (EncounterManager.Instance != null && EncounterManager.Instance.CurrentEnemyData != null)
+        {
+            string enemyName = EncounterManager.Instance.CurrentEnemyData.enemyName;
+            int number = ExtractNumberFromName(enemyName);
+            if (number > 0)
+            {
+                return number;
+            }
+        }
+
+        // Fallback: try to extract from enemy Character name
+        if (enemy != null)
+        {
+            return ExtractNumberFromName(enemy.CharacterName);
+        }
+
+        // Last fallback: try to extract from GameObject name
+        if (enemy != null && enemy.gameObject != null)
+        {
+            return ExtractNumberFromName(enemy.gameObject.name);
+        }
+
+        return 0;
+    }
+
+    /// <summary>
+    /// Extracts a number from a string (e.g., "Enemy 1" -> 1, "Enemy2" -> 2, "Enemy 3" -> 3)
+    /// </summary>
+    private int ExtractNumberFromName(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            return 0;
+        }
+
+        // Try to find a number in the name
+        string numberString = "";
+        foreach (char c in name)
+        {
+            if (char.IsDigit(c))
+            {
+                numberString += c;
+            }
+        }
+
+        if (int.TryParse(numberString, out int number))
+        {
+            return number;
+        }
+
+        return 0;
     }
 
     // Public method to restart battle (useful for testing)
