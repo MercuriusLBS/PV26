@@ -15,10 +15,10 @@ MonoBehaviour:
   enemyName: Enemy2
   enemySprite: {fileID: 0}
   enemyAnimatorController: {fileID: 0}
-  maxHealth: 100
-  attack: 15
+  maxHealth: 90
+  attack: 10
   evasionChance: 20
-  criticalHitChance: 15
+  criticalHitChance: 25
   criticalHitMultiplier: 2
   damageVariance: 0.2
   specialAttackMultiplier: 2

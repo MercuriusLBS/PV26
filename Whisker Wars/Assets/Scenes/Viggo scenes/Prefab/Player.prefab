@@ -216,7 +216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8172dcedbdee03946a848429e94e543f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Character
-  _maxHealth: 100
+  _maxHealth: 125
   _attack: 15
   _characterName: Character
   _evasionChance: 20

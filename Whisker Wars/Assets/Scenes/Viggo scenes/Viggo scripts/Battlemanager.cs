@@ -678,30 +678,35 @@ public class Battlemanager : MonoBehaviour
         }
 
         // Play the attack animation
-        string animationName = $"Enemy {enemyNumber} Attack";
-        Debug.Log($"[BattleManager] Playing attack animation: {animationName}");
+        string attackAnimationName = $"Enemy {enemyNumber} Attack";
+        string idleAnimationName = $"Enemy {enemyNumber} Idle";
+        Debug.Log($"[BattleManager] Playing attack animation: {attackAnimationName}");
         
-        // Play the animation by state name (no try-catch needed as Play() doesn't throw exceptions)
-        animator.Play(animationName, 0, 0f);
+        // Play the attack animation by state name
+        animator.Play(attackAnimationName, 0, 0f);
         
         // Wait a frame for the animation to start
         yield return null;
         
-        // Wait for the animation to complete
+        // Wait for the attack animation to complete
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         float animationLength = stateInfo.length;
         
         // If animation length is 0 or very small, it might not have found the animation
         if (animationLength <= 0.01f)
         {
-            Debug.LogWarning($"[BattleManager] Animation '{animationName}' might not exist or is very short. Using default wait time.");
+            Debug.LogWarning($"[BattleManager] Animation '{attackAnimationName}' might not exist or is very short. Using default wait time.");
             animationLength = 0.5f;
         }
         
-        // Wait for the animation to finish (with a minimum wait time)
+        // Wait for the attack animation to finish (with a minimum wait time)
         yield return new WaitForSeconds(Mathf.Max(animationLength, 0.5f));
         
-        Debug.Log($"[BattleManager] Attack animation completed: {animationName}");
+        Debug.Log($"[BattleManager] Attack animation completed: {attackAnimationName}");
+        
+        // Play the idle animation to return to idle state
+        animator.Play(idleAnimationName, 0, 0f);
+        Debug.Log($"[BattleManager] Returning to idle animation: {idleAnimationName}");
     }
 
     /// <summary>
