@@ -12,7 +12,7 @@ public class Battlemanager : MonoBehaviour
 {
     [Header("Combatants")]
     [SerializeField] private Character player;
-    [SerializeField] private Character enemy;
+    [SerializeField] private Character enemy; // Will be set by BattleEnemySpawner or found automatically
 
     [Header("Battle Settings")]
     [SerializeField] private float turnDelay = 1f; // Delay between turns for visual feedback
@@ -35,6 +35,15 @@ public class Battlemanager : MonoBehaviour
     public Character Player => player;
     public Character Enemy => enemy;
     public BattleState CurrentState => currentState;
+
+    /// <summary>
+    /// Sets the enemy character (called by BattleEnemySpawner)
+    /// </summary>
+    public void SetEnemy(Character enemyCharacter)
+    {
+        enemy = enemyCharacter;
+        Debug.Log($"[BattleManager] Enemy set to: {(enemy != null ? enemy.CharacterName : "NULL")}");
+    }
 
     private void Awake()
     {
@@ -71,51 +80,116 @@ public class Battlemanager : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("[BattleManager] Start called - calling StartBattle");
+        Debug.Log("[BattleManager] Start called - configuring enemy and starting battle");
         StartBattle();
     }
 
     public void StartBattle()
     {
-        if (player == null || enemy == null)
+        if (player == null)
         {
-            Debug.LogError("Player or Enemy not assigned in BattleManager!");
+            Debug.LogError("[BattleManager] Player not assigned in BattleManager!");
             return;
         }
 
-        // Configure enemy from EncounterManager if available
-        Debug.Log("[BattleManager] Checking EncounterManager for enemy data...");
-        
-        if (EncounterManager.Instance == null)
-        {
-            Debug.LogError("[BattleManager] EncounterManager.Instance is NULL!");
-        }
-        else
-        {
-            Debug.Log("[BattleManager] EncounterManager.Instance exists");
-            
-            if (EncounterManager.Instance.CurrentEnemyData == null)
-            {
-                Debug.LogError("[BattleManager] EncounterManager.CurrentEnemyData is NULL!");
-            }
-            else
-            {
-                Debug.Log($"[BattleManager] Found EnemyData: {EncounterManager.Instance.CurrentEnemyData.enemyName}");
-            }
-        }
-        
+        // Find and configure the correct enemy based on EnemyData
         if (EncounterManager.Instance != null && EncounterManager.Instance.CurrentEnemyData != null)
         {
             EnemyData enemyData = EncounterManager.Instance.CurrentEnemyData;
             Debug.Log($"[BattleManager] Configuring enemy from EnemyData: {enemyData.enemyName}");
-            Debug.Log($"[BattleManager] Enemy stats - HP: {enemyData.maxHealth}, Attack: {enemyData.attack}");
             
+            // Find all enemy GameObjects in the scene
+            Character[] allCharacters = FindObjectsByType<Character>(FindObjectsSortMode.None);
+            Character foundEnemy = null;
+            
+            // Hide all enemies first
+            foreach (Character character in allCharacters)
+            {
+                if (character != player)
+                {
+                    // This is an enemy - hide it
+                    character.gameObject.SetActive(false);
+                    Debug.Log($"[BattleManager] Hiding enemy GameObject: {character.gameObject.name}");
+                }
+            }
+            
+            // Find the enemy that matches the EnemyData name
+            foreach (Character character in allCharacters)
+            {
+                if (character != player)
+                {
+                    // Match by GameObject name or Character name with EnemyData name
+                    // Try matching GameObject name first, then Character name
+                    if (character.gameObject.name.Contains(enemyData.enemyName) || 
+                        character.CharacterName == enemyData.enemyName)
+                    {
+                        foundEnemy = character;
+                        Debug.Log($"[BattleManager] Found matching enemy: {character.gameObject.name}");
+                        break;
+                    }
+                }
+            }
+            
+            // If no exact match found, try to find by partial name match
+            if (foundEnemy == null)
+            {
+                foreach (Character character in allCharacters)
+                {
+                    if (character != player)
+                    {
+                        // Try partial match (e.g., "Enemy1" matches "Enemy1" or "Enemy1Prefab")
+                        string gameObjectName = character.gameObject.name.ToLower();
+                        string enemyDataName = enemyData.enemyName.ToLower();
+                        
+                        if (gameObjectName.Contains(enemyDataName) || enemyDataName.Contains(gameObjectName))
+                        {
+                            foundEnemy = character;
+                            Debug.Log($"[BattleManager] Found enemy by partial name match: {character.gameObject.name}");
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // If still no match, use the first enemy found (fallback)
+            if (foundEnemy == null)
+            {
+                foreach (Character character in allCharacters)
+                {
+                    if (character != player)
+                    {
+                        foundEnemy = character;
+                        Debug.LogWarning($"[BattleManager] No exact match found - using first enemy: {character.gameObject.name}");
+                        break;
+                    }
+                }
+            }
+            
+            if (foundEnemy == null)
+            {
+                Debug.LogError("[BattleManager] No enemy GameObject found in the scene! Please add enemy GameObjects to the battle scene.");
+                return;
+            }
+            
+            // Set the enemy reference
+            enemy = foundEnemy;
+            
+            // Show and configure the matching enemy
+            enemy.gameObject.SetActive(true);
             enemy.ConfigureFromEnemyData(enemyData);
-            Debug.Log($"[BattleManager] Enemy configured successfully from EncounterManager: {enemyData.enemyName}");
+            ConfigureEnemyVisuals(enemy.gameObject, enemyData);
+            
+            Debug.Log($"[BattleManager] Enemy configured - Stats: HP={enemy.MaxHealth}, Attack={enemy.Attack}, Name={enemy.CharacterName}");
         }
         else
         {
-            Debug.LogWarning("[BattleManager] No EncounterManager or EnemyData found - using default enemy stats");
+            // Fallback: use enemy assigned in Inspector
+            if (enemy == null)
+            {
+                Debug.LogError("[BattleManager] Enemy is null and no EnemyData found! Please assign an enemy GameObject in the BattleManager Inspector or ensure EncounterManager has EnemyData.");
+                return;
+            }
+            Debug.LogWarning("[BattleManager] No EncounterManager or EnemyData found - using default enemy stats and visuals");
         }
 
         // Reset health and cooldowns if needed
@@ -467,6 +541,82 @@ public class Battlemanager : MonoBehaviour
         {
             Debug.LogError("[BattleManager] EncounterManager not found - cannot return to overworld automatically");
         }
+    }
+
+    /// <summary>
+    /// Configures the enemy GameObject's visuals (sprite and animator) based on EnemyData
+    /// </summary>
+    private void ConfigureEnemyVisuals(GameObject enemyObject, EnemyData enemyData)
+    {
+        if (enemyObject == null || enemyData == null)
+        {
+            Debug.LogWarning("[BattleManager] Cannot configure enemy visuals - enemyObject or enemyData is null");
+            return;
+        }
+
+        Debug.Log($"[BattleManager] Configuring visuals for enemy GameObject: {enemyObject.name}");
+        
+        // Ensure enemy GameObject is active and visible
+        if (!enemyObject.activeSelf)
+        {
+            Debug.Log($"[BattleManager] Enemy GameObject was inactive - activating it");
+            enemyObject.SetActive(true);
+        }
+
+        // Configure sprite
+        SpriteRenderer spriteRenderer = enemyObject.GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+        {
+            // Try to get it from children
+            spriteRenderer = enemyObject.GetComponentInChildren<SpriteRenderer>();
+        }
+
+        if (spriteRenderer != null)
+        {
+            if (enemyData.enemySprite != null)
+            {
+                spriteRenderer.sprite = enemyData.enemySprite;
+                spriteRenderer.enabled = true; // Ensure sprite renderer is enabled
+                Debug.Log($"[BattleManager] Set enemy sprite to: {enemyData.enemySprite.name} on {spriteRenderer.gameObject.name}");
+            }
+            else
+            {
+                Debug.LogWarning($"[BattleManager] EnemyData {enemyData.enemyName} has no sprite assigned!");
+            }
+        }
+        else
+        {
+            Debug.LogError($"[BattleManager] Enemy GameObject {enemyObject.name} has no SpriteRenderer component! Please add one.");
+        }
+
+        // Configure animator controller
+        Animator animator = enemyObject.GetComponent<Animator>();
+        if (animator == null)
+        {
+            // Try to get it from children
+            animator = enemyObject.GetComponentInChildren<Animator>();
+        }
+
+        if (animator != null)
+        {
+            if (enemyData.enemyAnimatorController != null)
+            {
+                animator.runtimeAnimatorController = enemyData.enemyAnimatorController;
+                animator.enabled = true; // Ensure animator is enabled
+                Debug.Log($"[BattleManager] Set enemy animator controller to: {enemyData.enemyAnimatorController.name} on {animator.gameObject.name}");
+            }
+            else
+            {
+                Debug.Log($"[BattleManager] EnemyData {enemyData.enemyName} has no animator controller assigned - using default");
+            }
+        }
+        else
+        {
+            Debug.Log($"[BattleManager] Enemy GameObject {enemyObject.name} has no Animator component - skipping animator setup (this is okay if not using animations)");
+        }
+
+        // Log enemy position for debugging
+        Debug.Log($"[BattleManager] Enemy position: {enemyObject.transform.position}, Active: {enemyObject.activeSelf}, Visible: {(spriteRenderer != null ? spriteRenderer.enabled : "N/A")}");
     }
 
     // Public method to restart battle (useful for testing)
