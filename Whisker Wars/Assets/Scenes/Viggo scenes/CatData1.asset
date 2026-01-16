@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CatData1
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: Billy Badass
-  enemySprite: {fileID: -7122445645233332051, guid: 73f601e0b426cdc48bd15c0dfc2aba5d, type: 3}
+  enemySprite: {fileID: -7032164810989808079, guid: c200721575119f24baeac4ca4e5164a3, type: 3}
   enemyAnimatorController: {fileID: 0}
   maxHealth: 100
   attack: 15

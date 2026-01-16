@@ -468,10 +468,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.00035089254
-    y: 0
-    width: 0.9992982
-    height: 1
+    x: 0
+    y: 0.08333334
+    width: 1
+    height: 0.8333333
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 34
@@ -23569,6 +23569,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 401464300702461254, guid: c8ee98eddbd871c408f848c2971e5069, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -8997646832701752248, guid: 73f601e0b426cdc48bd15c0dfc2aba5d, type: 3}
     - target: {fileID: 1232574426781426140, guid: c8ee98eddbd871c408f848c2971e5069, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.151024
@@ -23670,6 +23674,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9101078137389784484, guid: 3785d17e7249c934ea009517a966560f, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 4609353238418448570, guid: 73f601e0b426cdc48bd15c0dfc2aba5d, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
