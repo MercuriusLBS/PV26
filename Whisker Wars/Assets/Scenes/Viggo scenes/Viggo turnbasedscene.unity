@@ -1154,7 +1154,7 @@ PrefabInstance:
     - target: {fileID: 401464300702461254, guid: c8ee98eddbd871c408f848c2971e5069, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 3445797309642419981, guid: ffebc901d5779d948b57f90bc11d510f, type: 3}
+      objectReference: {fileID: -7032164810989808079, guid: c200721575119f24baeac4ca4e5164a3, type: 3}
     - target: {fileID: 1232574426781426140, guid: c8ee98eddbd871c408f848c2971e5069, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.2
@@ -1207,6 +1207,10 @@ PrefabInstance:
       propertyPath: m_SpriteTilingProperty.oldSize.y
       value: 3.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5754907870381757777, guid: c8ee98eddbd871c408f848c2971e5069, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: e52023841058e9048b2bba513e5f0ceb, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1724,10 +1728,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2165677673738869755, guid: d321b701cbbdae347a32a5524fbdfa66, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: ee4a114a1bf2afb4fa0a398879ec4d63, type: 2}
     - target: {fileID: 3838734940847005515, guid: d321b701cbbdae347a32a5524fbdfa66, type: 3}
       propertyPath: m_Name
       value: ds
       objectReference: {fileID: 0}
+    - target: {fileID: 5943233792516746278, guid: d321b701cbbdae347a32a5524fbdfa66, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -2211521708840350790, guid: 14b2bae3129b7874ea99f1fc987fbe10, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2224,6 +2236,10 @@ PrefabInstance:
       propertyPath: _characterName
       value: Feral feline
       objectReference: {fileID: 0}
+    - target: {fileID: 785723106149584431, guid: 3785d17e7249c934ea009517a966560f, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 051f88a0f7e314e4e8529b7a20b4b3bb, type: 2}
     - target: {fileID: 7550601310630724111, guid: 3785d17e7249c934ea009517a966560f, type: 3}
       propertyPath: m_Name
       value: Feral feline
@@ -2268,6 +2284,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9101078137389784484, guid: 3785d17e7249c934ea009517a966560f, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -5869902636579892736, guid: 02edec07a08ec994b9a0606362eb284a, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
