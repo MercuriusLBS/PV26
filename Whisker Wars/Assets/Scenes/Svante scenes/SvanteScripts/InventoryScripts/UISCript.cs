@@ -28,6 +28,7 @@ public class InventorySlot : MonoBehaviour
         if (item != null)
         {
             icon.sprite = item.icon;
+            icon.color = Color.white;  
             icon.enabled = true;
 
             if (quantity > 1)
@@ -46,6 +47,8 @@ public class InventorySlot : MonoBehaviour
         }
     }
 
+
+
     public void ClearSlot()
     {
         item = null;
@@ -54,6 +57,8 @@ public class InventorySlot : MonoBehaviour
         icon.enabled = false;
         quantityText.enabled = false;
     }
+
+
 
     public void AddQuantity(int amount)
     {

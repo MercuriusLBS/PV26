@@ -46,6 +46,7 @@ public class PickableItem : MonoBehaviour
 
     void Update()
     {
+        Debug.Log($"Icon set: {item.icon.name}");
         float dist = Vector2.Distance(transform.position, player.position);
         isInRange = dist <= pickupRange;
 

@@ -1,16 +1,10 @@
 fileFormatVersion: 2
-guid: c1237986642e4364e9cf38cacca769ed
+guid: 5607fd08bff69824ea91101dd10c44a6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7084593233114468430
-    second: Enemy 1-standing idle Sheet_0
-  - first:
-      213: 1936522921073080845
-    second: Enemy 1-standing idle Sheet_1
-  - first:
-      213: 3459814237977981301
-    second: Enemy 1-standing idle Sheet_2
+      213: 421827017997372526
+    second: game_over_button5-ezgif.com-webp-to-png-converter (1)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -52,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -119,67 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Enemy 1-standing idle Sheet_0
+      name: game_over_button5-ezgif.com-webp-to-png-converter (1)_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 96
-        height: 112
+        x: 36
+        y: 57
+        width: 184
+        height: 45
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e409ced7208815260800000000000000
-      internalID: 7084593233114468430
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Enemy 1-standing idle Sheet_1
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 0
-        width: 96
-        height: 112
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d0a76f92659efda10800000000000000
-      internalID: 1936522921073080845
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Enemy 1-standing idle Sheet_2
-      rect:
-        serializedVersion: 2
-        x: 192
-        y: 0
-        width: 96
-        height: 112
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5713483f7bab30030800000000000000
-      internalID: 3459814237977981301
+      spriteID: e6c456c1071aad500800000000000000
+      internalID: 421827017997372526
       vertices: []
       indices: 
       edges: []
@@ -188,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 85ff4396c73e15b45bd5a10eee073a2f
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -196,13 +146,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":3.0,"y":1.0},"gridSpriteSize":{"x":96.0,"y":112.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      Enemy 1-standing idle Sheet_0: 7084593233114468430
-      Enemy 1-standing idle Sheet_1: 1936522921073080845
-      Enemy 1-standing idle Sheet_2: 3459814237977981301
+      game_over_button5-ezgif.com-webp-to-png-converter (1)_0: 421827017997372526
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
