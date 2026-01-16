@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: Enemy
   maxHealth: 100
-  attack: 10
+  attack: 15
   evasionChance: 20
   criticalHitChance: 15
   criticalHitMultiplier: 2
