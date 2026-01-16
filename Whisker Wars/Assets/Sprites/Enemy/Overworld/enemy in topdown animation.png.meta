@@ -1,16 +1,22 @@
 fileFormatVersion: 2
-guid: c1237986642e4364e9cf38cacca769ed
+guid: 73f601e0b426cdc48bd15c0dfc2aba5d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7084593233114468430
-    second: Enemy 1-standing idle Sheet_0
+      213: -8997646832701752248
+    second: enemy in topdown animation_0
   - first:
-      213: 1936522921073080845
-    second: Enemy 1-standing idle Sheet_1
+      213: -7122445645233332051
+    second: enemy in topdown animation_1
   - first:
-      213: 3459814237977981301
-    second: Enemy 1-standing idle Sheet_2
+      213: 4609353238418448570
+    second: enemy in topdown animation_2
+  - first:
+      213: 3576563334837293134
+    second: enemy in topdown animation_3
+  - first:
+      213: -524550120874679440
+    second: enemy in topdown animation_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -119,13 +125,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Enemy 1-standing idle Sheet_0
+      name: enemy in topdown animation_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 96
-        height: 112
+        width: 32
+        height: 45
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,20 +140,64 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e409ced7208815260800000000000000
-      internalID: 7084593233114468430
+      spriteID: 84cb46290efe12380800000000000000
+      internalID: -8997646832701752248
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Enemy 1-standing idle Sheet_1
+      name: enemy in topdown animation_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da0e6d70c6df72d90800000000000000
+      internalID: -7122445645233332051
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: enemy in topdown animation_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab06a345956b7ff30800000000000000
+      internalID: 4609353238418448570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: enemy in topdown animation_3
       rect:
         serializedVersion: 2
         x: 96
         y: 0
-        width: 96
-        height: 112
+        width: 32
+        height: 45
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,20 +206,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d0a76f92659efda10800000000000000
-      internalID: 1936522921073080845
+      spriteID: e40d9a1576182a130800000000000000
+      internalID: 3576563334837293134
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Enemy 1-standing idle Sheet_2
+      name: enemy in topdown animation_4
       rect:
         serializedVersion: 2
-        x: 192
+        x: 128
         y: 0
-        width: 96
-        height: 112
+        width: 32
+        height: 45
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,8 +228,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5713483f7bab30030800000000000000
-      internalID: 3459814237977981301
+      spriteID: 073606ab17c68b8f0800000000000000
+      internalID: -524550120874679440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: enemy in topdown animation_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 45
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb9f394a892536e4b8965874227613cd
+      internalID: -1017154847
       vertices: []
       indices: 
       edges: []
@@ -188,7 +260,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 85ff4396c73e15b45bd5a10eee073a2f
+    spriteID: 3ce78f311a180dd428459792b3f1963f
     internalID: 0
     vertices: []
     indices: 
@@ -198,11 +270,14 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":3.0,"y":1.0},"gridSpriteSize":{"x":96.0,"y":112.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":45.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Enemy 1-standing idle Sheet_0: 7084593233114468430
-      Enemy 1-standing idle Sheet_1: 1936522921073080845
-      Enemy 1-standing idle Sheet_2: 3459814237977981301
+      enemy in topdown animation_0: -8997646832701752248
+      enemy in topdown animation_1: -7122445645233332051
+      enemy in topdown animation_2: 4609353238418448570
+      enemy in topdown animation_3: 3576563334837293134
+      enemy in topdown animation_4: -524550120874679440
+      enemy in topdown animation_5: -1017154847
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
