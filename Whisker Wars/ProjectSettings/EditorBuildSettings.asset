@@ -4,25 +4,6 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes:
-  - enabled: 1
-    path: Assets/Scenes/Svante scenes/SvanteScene.unity
-    guid: 7444198a5de2c474e9bb78deb49ddee5
-  - enabled: 1
-    path: Assets/Scenes/Main.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 1
-    path: Assets/Scenes/Svante scenes/PauseMenu.unity
-    guid: 1dfef1cbc1758b1498a2ff0bfe050b71
-  - enabled: 1
-    path: Assets/Scenes/Viggo scenes/MainViggo.unity
-    guid: f8efb4eb0a18a3943aecf7973c4e26b4
-  - enabled: 1
-    path: Assets/Scenes/Viggo scenes/Viggo turnbasedscene.unity
-    guid: 575d0bcfb1dba4844a657b6503658d83
-  - enabled: 1
-    path: Assets/Scenes/Svante scenes/SvanteGameOVer.unity
-    guid: 0fe25bf1278899a489a7128d4844f42b
-  m_configObjects:
-    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_Scenes: []
+  m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
