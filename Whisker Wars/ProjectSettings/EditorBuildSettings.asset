@@ -5,14 +5,32 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Viggo scenes/MainViggo.unity
     guid: f8efb4eb0a18a3943aecf7973c4e26b4
   - enabled: 1
+    path: Assets/Scenes/Svante scenes/PauseMenu.unity
+    guid: 1dfef1cbc1758b1498a2ff0bfe050b71
+  - enabled: 0
     path: Assets/Scenes/Viggo scenes/Viggo turnbasedscene.unity
     guid: 575d0bcfb1dba4844a657b6503658d83
   - enabled: 1
+    path: Assets/Scenes/Viggo scenes/GameOverScreen.unity
+    guid: 603022ebb524e9e47b9342625bdbf7dc
+  - enabled: 1
     path: Assets/Scenes/Main.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/Svante scenes/SvanteScene.unity
+    guid: 7444198a5de2c474e9bb78deb49ddee5
+  - enabled: 1
+    path: Assets/Scenes/turnbasedscene.unity
+    guid: 1c80eb9d9eb9e4f4fbbe538b4f61c749
+  - enabled: 1
+    path: Assets/Scenes/Viggo scenes/ViggoMain.unity
+    guid: 819d9f45cfc60fe4ba8d57b9256286eb
+  - enabled: 1
+    path: Assets/Scenes/Viggo scenes/Viggoturnbasedscene.unity
+    guid: f4a8b9a2e3f4ca247aa024ea0ea95110
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

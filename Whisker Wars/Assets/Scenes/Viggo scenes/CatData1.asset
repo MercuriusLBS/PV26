@@ -16,7 +16,7 @@ MonoBehaviour:
   enemySprite: {fileID: 0}
   enemyAnimatorController: {fileID: 0}
   maxHealth: 100
-  attack: 20
+  attack: 15
   evasionChance: 30
   criticalHitChance: 15
   criticalHitMultiplier: 2

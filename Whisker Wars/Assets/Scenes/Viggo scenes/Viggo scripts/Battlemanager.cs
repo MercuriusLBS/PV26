@@ -207,6 +207,9 @@ public class Battlemanager : MonoBehaviour
             Debug.LogWarning("[BattleManager] No EncounterManager or EnemyData found - using default enemy stats and visuals");
         }
 
+        // Disable player movement during battle
+        DisablePlayerMovement();
+
         // Reset health and cooldowns if needed
         player.ResetHealth();
         enemy.ResetHealth();
@@ -766,6 +769,38 @@ public class Battlemanager : MonoBehaviour
         }
 
         return 0;
+    }
+
+    /// <summary>
+    /// Disables player movement during battle
+    /// </summary>
+    private void DisablePlayerMovement()
+    {
+        if (player == null || player.gameObject == null)
+        {
+            return;
+        }
+
+        // Disable PlayerMovement component
+        PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+        if (playerMovement != null)
+        {
+            playerMovement.enabled = false;
+            Debug.Log("[BattleManager] Disabled PlayerMovement component during battle");
+        }
+        else
+        {
+            Debug.LogWarning("[BattleManager] PlayerMovement component not found on player GameObject");
+        }
+
+        // Also disable Rigidbody2D physics if present (freeze movement)
+        Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.simulated = false;
+            Debug.Log("[BattleManager] Disabled Rigidbody2D physics during battle");
+        }
     }
 
     // Public method to restart battle (useful for testing)
