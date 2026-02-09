@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System.Linq;
 
 public class EncounterManager : MonoBehaviour
 {
@@ -13,7 +15,11 @@ public class EncounterManager : MonoBehaviour
     // Current encounter data
     public EnemyData CurrentEnemyData { get; private set; }
     public bool LastBattleWon { get; private set; }
-    public string LastDefeatedEnemyID { get; private set; } // For tracking which enemy was defeated
+    public string LastDefeatedEnemyID { get; private set; } // For tracking which enemy was defeated (kept for backward compatibility)
+    
+    // Collection of all defeated enemy IDs
+    private HashSet<string> defeatedEnemyIDs = new HashSet<string>();
+    private const string DEFEATED_ENEMIES_KEY = "DefeatedEnemyIDs";
     
     // Player position saving
     private Vector3 savedPlayerPosition;
@@ -65,6 +71,9 @@ public class EncounterManager : MonoBehaviour
     {
         Debug.Log($"[EncounterManager] Start called - Battle Scene: {battleSceneName}, Overworld Scene: {overworldSceneName}");
         Debug.Log($"[EncounterManager] Current Scene: {UnityEngine.SceneManagement.SceneManager.GetActiveScene().name}");
+        
+        // Load defeated enemies from PlayerPrefs
+        LoadDefeatedEnemies();
     }
 
     /// <summary>
@@ -131,6 +140,14 @@ public class EncounterManager : MonoBehaviour
         Debug.Log($"[EncounterManager] EndEncounter called - Player won: {playerWon}");
         
         LastBattleWon = playerWon;
+
+        // If player won, add the defeated enemy to the collection and save it
+        if (playerWon && !string.IsNullOrEmpty(LastDefeatedEnemyID))
+        {
+            defeatedEnemyIDs.Add(LastDefeatedEnemyID);
+            SaveDefeatedEnemies();
+            Debug.Log($"[EncounterManager] Added defeated enemy '{LastDefeatedEnemyID}' to collection. Total defeated: {defeatedEnemyIDs.Count}");
+        }
 
         Debug.Log($"[EncounterManager] Encounter ended. Player won: {playerWon}, Defeated Enemy ID: {LastDefeatedEnemyID}");
 
@@ -219,5 +236,70 @@ public class EncounterManager : MonoBehaviour
         CurrentEnemyData = null;
         LastBattleWon = false;
         LastDefeatedEnemyID = string.Empty;
+    }
+
+    /// <summary>
+    /// Checks if an enemy with the given ID has been defeated
+    /// </summary>
+    public bool IsEnemyDefeated(string enemyID)
+    {
+        if (string.IsNullOrEmpty(enemyID))
+        {
+            return false;
+        }
+        return defeatedEnemyIDs.Contains(enemyID);
+    }
+
+    /// <summary>
+    /// Saves the list of defeated enemy IDs to PlayerPrefs
+    /// </summary>
+    private void SaveDefeatedEnemies()
+    {
+        // Convert HashSet to comma-separated string
+        string defeatedEnemiesString = string.Join(",", defeatedEnemyIDs.ToArray());
+        PlayerPrefs.SetString(DEFEATED_ENEMIES_KEY, defeatedEnemiesString);
+        PlayerPrefs.Save();
+        Debug.Log($"[EncounterManager] Saved {defeatedEnemyIDs.Count} defeated enemies to PlayerPrefs");
+    }
+
+    /// <summary>
+    /// Loads the list of defeated enemy IDs from PlayerPrefs
+    /// </summary>
+    private void LoadDefeatedEnemies()
+    {
+        defeatedEnemyIDs.Clear();
+        
+        if (PlayerPrefs.HasKey(DEFEATED_ENEMIES_KEY))
+        {
+            string defeatedEnemiesString = PlayerPrefs.GetString(DEFEATED_ENEMIES_KEY, "");
+            if (!string.IsNullOrEmpty(defeatedEnemiesString))
+            {
+                // Split comma-separated string and add to HashSet
+                string[] enemyIDs = defeatedEnemiesString.Split(',');
+                foreach (string id in enemyIDs)
+                {
+                    if (!string.IsNullOrEmpty(id))
+                    {
+                        defeatedEnemyIDs.Add(id);
+                    }
+                }
+                Debug.Log($"[EncounterManager] Loaded {defeatedEnemyIDs.Count} defeated enemies from PlayerPrefs");
+            }
+        }
+        else
+        {
+            Debug.Log("[EncounterManager] No defeated enemies found in PlayerPrefs - starting fresh");
+        }
+    }
+
+    /// <summary>
+    /// Clears all defeated enemies (useful for testing or resetting)
+    /// </summary>
+    public void ClearDefeatedEnemies()
+    {
+        defeatedEnemyIDs.Clear();
+        PlayerPrefs.DeleteKey(DEFEATED_ENEMIES_KEY);
+        PlayerPrefs.Save();
+        Debug.Log("[EncounterManager] Cleared all defeated enemies");
     }
 }

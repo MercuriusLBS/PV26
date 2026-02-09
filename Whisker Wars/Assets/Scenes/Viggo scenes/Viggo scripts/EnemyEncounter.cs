@@ -46,6 +46,9 @@ public class EnemyEncounter : MonoBehaviour
 
     private void Start()
     {
+        // Check if this enemy should be marked as defeated (from saved data)
+        CheckIfDefeated();
+        
         // Hide enemy if already defeated and can't be encountered again
         if (isDefeated && !canEncounterMultipleTimes)
         {
@@ -123,16 +126,16 @@ public class EnemyEncounter : MonoBehaviour
     }
 
     /// <summary>
-    /// Check if this enemy matches the defeated enemy ID
+    /// Check if this enemy matches any defeated enemy ID
     /// </summary>
     public void CheckIfDefeated()
     {
-        if (EncounterManager.Instance != null && EncounterManager.Instance.LastBattleWon)
+        if (EncounterManager.Instance != null)
         {
-            string defeatedID = EncounterManager.Instance.LastDefeatedEnemyID;
             string thisID = string.IsNullOrEmpty(enemyID) ? gameObject.name : enemyID;
 
-            if (defeatedID == thisID)
+            // Check if this enemy has been defeated (using the collection of all defeated enemies)
+            if (EncounterManager.Instance.IsEnemyDefeated(thisID))
             {
                 MarkAsDefeated();
             }
