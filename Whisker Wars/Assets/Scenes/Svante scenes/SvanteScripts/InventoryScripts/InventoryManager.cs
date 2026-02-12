@@ -30,13 +30,28 @@ public class InventoryManager : MonoBehaviour
     private float notificationTimer = 0f;
     private InputAction toggleInventoryAction;
 
+    // Helper class used to expose item stacks (item + total quantity)
+    public class InventoryItemStack
+    {
+        public Item item;
+        public int quantity;
+
+        public InventoryItemStack(Item item, int quantity)
+        {
+            this.item = item;
+            this.quantity = quantity;
+        }
+    }
+
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+            // Persist inventory across scene loads so items are available in battle
+            DontDestroyOnLoad(gameObject);
         }
-        else
+        else if (Instance != this)
         {
             Destroy(gameObject);
         }
@@ -239,5 +254,48 @@ public class InventoryManager : MonoBehaviour
             }
         }
         return count;
+    }
+
+    /// <summary>
+    /// Returns a list of all battle-usable items (grouped by item type with total quantity).
+    /// Used by the turn-based combat UI to populate the Items menu.
+    /// </summary>
+    public List<InventoryItemStack> GetBattleUsableItems()
+    {
+        List<InventoryItemStack> result = new List<InventoryItemStack>();
+        Dictionary<Item, int> counts = new Dictionary<Item, int>();
+
+        foreach (InventorySlot slot in slots)
+        {
+            if (slot.item == null)
+            {
+                continue;
+            }
+
+            Item item = slot.item;
+
+            // Only include items that are marked as usable in battle
+            if (!item.canUseInBattle)
+            {
+                continue;
+            }
+
+            if (!counts.ContainsKey(item))
+            {
+                counts[item] = 0;
+            }
+
+            counts[item] += slot.quantity;
+        }
+
+        foreach (KeyValuePair<Item, int> kvp in counts)
+        {
+            if (kvp.Value > 0)
+            {
+                result.Add(new InventoryItemStack(kvp.Key, kvp.Value));
+            }
+        }
+
+        return result;
     }
 }

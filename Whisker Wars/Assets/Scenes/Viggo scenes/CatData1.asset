@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: CatData1
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: Enemy1
-  enemySprite: {fileID: 0}
-  enemyAnimatorController: {fileID: 0}
+  enemySprite: {fileID: -5869902636579892736, guid: 02edec07a08ec994b9a0606362eb284a, type: 3}
+  enemyAnimatorController: {fileID: 9100000, guid: 051f88a0f7e314e4e8529b7a20b4b3bb, type: 2}
   maxHealth: 100
   attack: 15
   evasionChance: 30

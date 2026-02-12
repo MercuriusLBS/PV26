@@ -17,6 +17,13 @@ public class BattleUI : MonoBehaviour
     [Header("Main Action Menu")]
     [SerializeField] private GameObject mainActionMenuPanel;
     [SerializeField] private Button abilitiesButton;
+    [SerializeField] private Button itemsButton;
+
+    [Header("Items Submenu")]
+    [SerializeField] private GameObject itemsSubmenuPanel;
+    [SerializeField] private Transform itemsListParent;
+    [SerializeField] private GameObject itemButtonPrefab;
+    [SerializeField] private Button itemsBackButton;
 
     [Header("Abilities Submenu")]
     [SerializeField] private GameObject abilitiesSubmenuPanel;
@@ -43,7 +50,7 @@ public class BattleUI : MonoBehaviour
 
     private void Start()
     {
-        // Connect main menu button
+        // Connect main menu buttons
         if (abilitiesButton != null)
         {
             abilitiesButton.onClick.AddListener(OnAbilitiesButtonClicked);
@@ -51,6 +58,15 @@ public class BattleUI : MonoBehaviour
         else
         {
             Debug.LogWarning("Abilities button not assigned in BattleUI!");
+        }
+
+        if (itemsButton != null)
+        {
+            itemsButton.onClick.AddListener(OnItemsButtonClicked);
+        }
+        else
+        {
+            Debug.LogWarning("Items button not assigned in BattleUI!");
         }
 
         // Connect ability buttons
@@ -86,6 +102,11 @@ public class BattleUI : MonoBehaviour
             backButton.onClick.AddListener(OnBackButtonClicked);
         }
 
+        if (itemsBackButton != null)
+        {
+            itemsBackButton.onClick.AddListener(OnBackFromItemsButtonClicked);
+        }
+
         // Initialize UI - start with main menu visible, submenu hidden
         if (mainActionMenuPanel != null)
         {
@@ -94,6 +115,11 @@ public class BattleUI : MonoBehaviour
         if (abilitiesSubmenuPanel != null)
         {
             abilitiesSubmenuPanel.SetActive(false);
+        }
+
+        if (itemsSubmenuPanel != null)
+        {
+            itemsSubmenuPanel.SetActive(false);
         }
 
         // Initialize health bars
@@ -150,10 +176,20 @@ public class BattleUI : MonoBehaviour
             abilitiesButton.interactable = active;
         }
 
-        // Hide submenu when disabling main menu
+        if (itemsButton != null)
+        {
+            itemsButton.interactable = active;
+        }
+
+        // Hide submenus when disabling main menu
         if (!active && abilitiesSubmenuPanel != null)
         {
             abilitiesSubmenuPanel.SetActive(false);
+        }
+
+        if (!active && itemsSubmenuPanel != null)
+        {
+            itemsSubmenuPanel.SetActive(false);
         }
     }
 
@@ -167,6 +203,11 @@ public class BattleUI : MonoBehaviour
         {
             abilitiesSubmenuPanel.SetActive(false);
         }
+
+        if (itemsSubmenuPanel != null)
+        {
+            itemsSubmenuPanel.SetActive(false);
+        }
     }
 
     private void ShowAbilitiesSubmenu()
@@ -179,6 +220,31 @@ public class BattleUI : MonoBehaviour
         {
             abilitiesSubmenuPanel.SetActive(true);
         }
+
+        if (itemsSubmenuPanel != null)
+        {
+            itemsSubmenuPanel.SetActive(false);
+        }
+    }
+
+    private void ShowItemsSubmenu()
+    {
+        if (mainActionMenuPanel != null)
+        {
+            mainActionMenuPanel.SetActive(false);
+        }
+
+        if (abilitiesSubmenuPanel != null)
+        {
+            abilitiesSubmenuPanel.SetActive(false);
+        }
+
+        if (itemsSubmenuPanel != null)
+        {
+            itemsSubmenuPanel.SetActive(true);
+        }
+
+        PopulateItemsList();
     }
 
     public void ShowBattleLog(string message)
@@ -205,7 +271,17 @@ public class BattleUI : MonoBehaviour
         ShowAbilitiesSubmenu();
     }
 
+    private void OnItemsButtonClicked()
+    {
+        ShowItemsSubmenu();
+    }
+
     private void OnBackButtonClicked()
+    {
+        ShowMainMenu();
+    }
+
+    private void OnBackFromItemsButtonClicked()
     {
         ShowMainMenu();
     }
@@ -234,6 +310,53 @@ public class BattleUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Populates the items submenu with buttons for each battle-usable item.
+    /// </summary>
+    private void PopulateItemsList()
+    {
+        if (itemsListParent == null || itemButtonPrefab == null)
+        {
+            Debug.LogWarning("Items list parent or item button prefab is not assigned in BattleUI.");
+            return;
+        }
+
+        // Clear existing children
+        for (int i = itemsListParent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(itemsListParent.GetChild(i).gameObject);
+        }
+
+        if (InventoryManager.Instance == null)
+        {
+            Debug.LogWarning("InventoryManager.Instance is null - cannot populate items list.");
+            return;
+        }
+
+        var battleItems = InventoryManager.Instance.GetBattleUsableItems();
+
+        if (battleItems == null || battleItems.Count == 0)
+        {
+            Debug.Log("No battle-usable items found in inventory.");
+            return;
+        }
+
+        foreach (var stack in battleItems)
+        {
+            GameObject buttonObj = Instantiate(itemButtonPrefab, itemsListParent);
+            BattleItemButton itemButton = buttonObj.GetComponent<BattleItemButton>();
+
+            if (itemButton != null)
+            {
+                itemButton.Initialize(stack.item, stack.quantity, battleManager);
+            }
+            else
+            {
+                Debug.LogWarning("Item button prefab does not have a BattleItemButton component.");
+            }
+        }
+    }
+
     private void OnDestroy()
     {
         // Clean up button listeners
@@ -256,6 +379,16 @@ public class BattleUI : MonoBehaviour
         if (backButton != null)
         {
             backButton.onClick.RemoveListener(OnBackButtonClicked);
+        }
+
+        if (itemsButton != null)
+        {
+            itemsButton.onClick.RemoveListener(OnItemsButtonClicked);
+        }
+
+        if (itemsBackButton != null)
+        {
+            itemsBackButton.onClick.RemoveListener(OnBackFromItemsButtonClicked);
         }
 
         if (clearLogCoroutine != null)

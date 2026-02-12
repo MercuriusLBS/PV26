@@ -92,118 +92,31 @@ public class Battlemanager : MonoBehaviour
             return;
         }
 
-        // Find and configure the correct enemy based on EnemyData
+        // We rely on a single enemy \"slot\" GameObject assigned in the inspector.
+        // This GameObject will be configured at runtime based on the EnemyData
+        // from EncounterManager (stats, sprite, animations).
+        if (enemy == null)
+        {
+            Debug.LogError("[BattleManager] Enemy is null! Please assign an enemy GameObject (battle enemy) in the BattleManager Inspector.");
+            return;
+        }
+
+        Debug.Log($"[BattleManager] Starting battle with player: {player.CharacterName} and enemy placeholder: {enemy.CharacterName}");
+
+        // Configure enemy from EncounterManager if available
         if (EncounterManager.Instance != null && EncounterManager.Instance.CurrentEnemyData != null)
         {
             EnemyData enemyData = EncounterManager.Instance.CurrentEnemyData;
             Debug.Log($"[BattleManager] Configuring enemy from EnemyData: {enemyData.enemyName}");
-            
-            // Find all enemy GameObjects in the scene
-            Character[] allCharacters = FindObjectsByType<Character>(FindObjectsSortMode.None);
-            Character foundEnemy = null;
-            
-            // Helper method to check if a character is the player
-            bool IsPlayer(Character character)
-            {
-                if (character == null || player == null) return false;
-                // Check by reference, GameObject reference, name, or tag
-                return character == player || 
-                       character.gameObject == player.gameObject ||
-                       character.gameObject.name == player.gameObject.name ||
-                       character.gameObject.CompareTag("Player");
-            }
-            
-            // Hide all enemies first (but never hide the player)
-            foreach (Character character in allCharacters)
-            {
-                if (!IsPlayer(character))
-                {
-                    // This is an enemy - hide it
-                    character.gameObject.SetActive(false);
-                    Debug.Log($"[BattleManager] Hiding enemy GameObject: {character.gameObject.name}");
-                }
-                else
-                {
-                    Debug.Log($"[BattleManager] Skipping player GameObject: {character.gameObject.name}");
-                }
-            }
-            
-            // Find the enemy that matches the EnemyData name
-            foreach (Character character in allCharacters)
-            {
-                if (!IsPlayer(character))
-                {
-                    // Match by GameObject name or Character name with EnemyData name
-                    // Try matching GameObject name first, then Character name
-                    if (character.gameObject.name.Contains(enemyData.enemyName) || 
-                        character.CharacterName == enemyData.enemyName)
-                    {
-                        foundEnemy = character;
-                        Debug.Log($"[BattleManager] Found matching enemy: {character.gameObject.name}");
-                        break;
-                    }
-                }
-            }
-            
-            // If no exact match found, try to find by partial name match
-            if (foundEnemy == null)
-            {
-                foreach (Character character in allCharacters)
-                {
-                    if (!IsPlayer(character))
-                    {
-                        // Try partial match (e.g., "Enemy1" matches "Enemy1" or "Enemy1Prefab")
-                        string gameObjectName = character.gameObject.name.ToLower();
-                        string enemyDataName = enemyData.enemyName.ToLower();
-                        
-                        if (gameObjectName.Contains(enemyDataName) || enemyDataName.Contains(gameObjectName))
-                        {
-                            foundEnemy = character;
-                            Debug.Log($"[BattleManager] Found enemy by partial name match: {character.gameObject.name}");
-                            break;
-                        }
-                    }
-                }
-            }
-            
-            // If still no match, use the first enemy found (fallback)
-            if (foundEnemy == null)
-            {
-                foreach (Character character in allCharacters)
-                {
-                    if (!IsPlayer(character))
-                    {
-                        foundEnemy = character;
-                        Debug.LogWarning($"[BattleManager] No exact match found - using first enemy: {character.gameObject.name}");
-                        break;
-                    }
-                }
-            }
-            
-            if (foundEnemy == null)
-            {
-                Debug.LogError("[BattleManager] No enemy GameObject found in the scene! Please add enemy GameObjects to the battle scene.");
-                return;
-            }
-            
-            // Set the enemy reference
-            enemy = foundEnemy;
-            
-            // Show and configure the matching enemy
-            enemy.gameObject.SetActive(true);
+
+            // Configure stats and visuals on the assigned enemy GameObject
             enemy.ConfigureFromEnemyData(enemyData);
             ConfigureEnemyVisuals(enemy.gameObject, enemyData);
-            
+
             Debug.Log($"[BattleManager] Enemy configured - Stats: HP={enemy.MaxHealth}, Attack={enemy.Attack}, Name={enemy.CharacterName}");
         }
         else
         {
-            // Fallback: use enemy assigned in Inspector
-            if (enemy == null)
-            {
-                Debug.LogError("[BattleManager] Enemy is null and no EnemyData found! Please assign an enemy GameObject in the BattleManager Inspector or ensure EncounterManager has EnemyData.");
-                return;
-            }
             Debug.LogWarning("[BattleManager] No EncounterManager or EnemyData found - using default enemy stats and visuals");
         }
 
@@ -451,6 +364,88 @@ public class Battlemanager : MonoBehaviour
         }
 
         // Disable action menu and switch to enemy turn
+        if (battleUI != null)
+        {
+            battleUI.SetActionMenuActive(false);
+        }
+
+        StartCoroutine(EnemyTurnCoroutine());
+    }
+
+    /// <summary>
+    /// Uses an item from the player's inventory during their turn (e.g., a healing item).
+    /// </summary>
+    public void PlayerUseItem(Item item)
+    {
+        if (currentState != BattleState.PlayerTurn)
+        {
+            Debug.LogWarning("[BattleManager] Cannot use item - not player's turn.");
+            return;
+        }
+
+        if (item == null)
+        {
+            Debug.LogWarning("[BattleManager] Cannot use item - item is null.");
+            return;
+        }
+
+        if (InventoryManager.Instance == null)
+        {
+            Debug.LogWarning("[BattleManager] Cannot use item - InventoryManager.Instance is null.");
+            return;
+        }
+
+        if (!item.canUseInBattle)
+        {
+            string notUsableMessage = $"{item.itemName} cannot be used in battle.";
+            Debug.Log(notUsableMessage);
+            if (battleUI != null)
+            {
+                battleUI.ShowBattleLog(notUsableMessage);
+            }
+            return;
+        }
+
+        int currentCount = InventoryManager.Instance.GetItemCount(item);
+        if (currentCount <= 0)
+        {
+            string noItemMessage = $"No more {item.itemName} left!";
+            Debug.Log(noItemMessage);
+            if (battleUI != null)
+            {
+                battleUI.ShowBattleLog(noItemMessage);
+            }
+            return;
+        }
+
+        // Apply healing
+        int healAmount = Mathf.Max(0, item.healAmount);
+        if (healAmount <= 0)
+        {
+            string zeroHealMessage = $"{item.itemName} has no healing effect.";
+            Debug.Log(zeroHealMessage);
+            if (battleUI != null)
+            {
+                battleUI.ShowBattleLog(zeroHealMessage);
+            }
+            return;
+        }
+
+        player.Heal(healAmount);
+
+        // Remove one item from inventory
+        InventoryManager.Instance.RemoveItem(item, 1);
+
+        string message = $"{player.CharacterName} uses {item.itemName} and heals {healAmount} HP!";
+        Debug.Log(message);
+
+        if (battleUI != null)
+        {
+            battleUI.UpdateHealthBars(player, enemy);
+            battleUI.ShowBattleLog(message);
+        }
+
+        // End player's turn after using an item
         if (battleUI != null)
         {
             battleUI.SetActionMenuActive(false);
