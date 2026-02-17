@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using TMPro;
 
@@ -9,6 +10,9 @@ public class PickableItem : MonoBehaviour
 
     [Header("Interaction Settings")]
     public float pickupRange = 2f;
+
+    [Tooltip("Optional unique ID. If empty, uses scene name + object name so this instance stays collected when returning from combat.")]
+    [SerializeField] private string pickableID = "";
 
     [Header("UI References")]
     public GameObject interactPrompt;
@@ -21,6 +25,13 @@ public class PickableItem : MonoBehaviour
 
     void Start()
     {
+        // If we already collected this pickable this session (e.g. before combat), don't respawn it
+        if (EncounterManager.Instance != null && EncounterManager.Instance.IsPickableCollected(GetPickableId()))
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         player = GameObject.FindGameObjectWithTag("Player").transform;
 
         // Get the PlayerInput component from the player
@@ -75,8 +86,16 @@ public class PickableItem : MonoBehaviour
 
         if (wasPickedUp)
         {
+            if (EncounterManager.Instance != null)
+                EncounterManager.Instance.RegisterCollectedPickable(GetPickableId());
             Destroy(gameObject);
         }
+    }
+
+    private string GetPickableId()
+    {
+        if (!string.IsNullOrEmpty(pickableID)) return pickableID;
+        return SceneManager.GetActiveScene().name + "_" + gameObject.name;
     }
 
     void OnDrawGizmosSelected()

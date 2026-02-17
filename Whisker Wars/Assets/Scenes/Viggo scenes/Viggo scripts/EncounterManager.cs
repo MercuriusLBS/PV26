@@ -19,6 +19,9 @@ public class EncounterManager : MonoBehaviour
     
     // Collection of all defeated enemy IDs (per session only - not persisted between runs)
     private HashSet<string> defeatedEnemyIDs = new HashSet<string>();
+
+    // Collection of collected pickable IDs (per session only - so they don't respawn after returning from combat)
+    private HashSet<string> collectedPickableIDs = new HashSet<string>();
     
     // Player position saving
     private Vector3 savedPlayerPosition;
@@ -246,6 +249,24 @@ public class EncounterManager : MonoBehaviour
             return false;
         }
         return defeatedEnemyIDs.Contains(enemyID);
+    }
+
+    /// <summary>
+    /// Registers a pickable as collected so it won't respawn when returning from combat (session only).
+    /// </summary>
+    public void RegisterCollectedPickable(string pickableID)
+    {
+        if (string.IsNullOrEmpty(pickableID)) return;
+        collectedPickableIDs.Add(pickableID);
+    }
+
+    /// <summary>
+    /// Returns true if this pickable was already collected this session (e.g. before going to combat).
+    /// </summary>
+    public bool IsPickableCollected(string pickableID)
+    {
+        if (string.IsNullOrEmpty(pickableID)) return false;
+        return collectedPickableIDs.Contains(pickableID);
     }
 
     // Note: previously we saved / loaded defeated enemies using PlayerPrefs so that
