@@ -1,17 +1,19 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Animator), typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
 
     private Animator animator;
+    private Rigidbody2D rb;
     private Vector2 movement;
 
     void Awake()
     {
         animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -39,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
             vertical = 0f;
         }
 
-        // Set movement vector for animator
+        // Set movement vector for animator & physics
         movement.x = horizontal;
         movement.y = vertical;
 
@@ -53,8 +55,11 @@ public class PlayerMovement : MonoBehaviour
             animator.SetFloat("MoveX", movement.x);
             animator.SetFloat("MoveY", movement.y);
         }
+    }
 
-        // Move the player at constant speed
-        transform.Translate(new Vector3(movement.x, movement.y, 0f) * moveSpeed * Time.deltaTime);
+    void FixedUpdate()
+    {
+        // Use Rigidbody2D movement so collisions work correctly
+        rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
     }
 }
