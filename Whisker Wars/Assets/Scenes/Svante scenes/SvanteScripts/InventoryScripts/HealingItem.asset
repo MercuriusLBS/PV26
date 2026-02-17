@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f5e54b85f349124e8a6885152e019c2, type: 3}
-  m_Name: Testing Item
+  m_Name: HealingItem
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: 'Lifebloom '
   icon: {fileID: 3373568495408583166, guid: d8c095fbe82eeff4c9ac9c8b384e2561, type: 3}

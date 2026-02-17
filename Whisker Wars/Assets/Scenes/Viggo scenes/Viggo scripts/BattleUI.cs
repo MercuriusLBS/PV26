@@ -5,12 +5,14 @@ using TMPro;
 public class BattleUI : MonoBehaviour
 {
     [Header("Player UI")]
-    [SerializeField] private Slider playerHealthBar;
+    // Filled Image inside the player health bar border
+    [SerializeField] private Image playerHealthFill;
     [SerializeField] private TextMeshProUGUI playerHealthText;
     [SerializeField] private TextMeshProUGUI playerNameText;
 
     [Header("Enemy UI")]
-    [SerializeField] private Slider enemyHealthBar;
+    // Filled Image inside the enemy health bar border
+    [SerializeField] private Image enemyHealthFill;
     [SerializeField] private TextMeshProUGUI enemyHealthText;
     [SerializeField] private TextMeshProUGUI enemyNameText;
 
@@ -132,9 +134,10 @@ public class BattleUI : MonoBehaviour
     public void UpdateHealthBars(Character player, Character enemy)
     {
         // Update player health bar
-        if (playerHealthBar != null && player != null)
+        if (playerHealthFill != null && player != null)
         {
-            playerHealthBar.value = player.GetHealthPercentage();
+            // Assumes GetHealthPercentage returns a value between 0 and 1
+            playerHealthFill.fillAmount = player.GetHealthPercentage();
         }
 
         if (playerHealthText != null && player != null)
@@ -148,9 +151,10 @@ public class BattleUI : MonoBehaviour
         }
 
         // Update enemy health bar
-        if (enemyHealthBar != null && enemy != null)
+        if (enemyHealthFill != null && enemy != null)
         {
-            enemyHealthBar.value = enemy.GetHealthPercentage();
+            // Assumes GetHealthPercentage returns a value between 0 and 1
+            enemyHealthFill.fillAmount = enemy.GetHealthPercentage();
         }
 
         if (enemyHealthText != null && enemy != null)
