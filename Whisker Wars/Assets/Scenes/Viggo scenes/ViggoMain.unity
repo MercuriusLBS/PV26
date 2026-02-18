@@ -406,6 +406,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: f75d217c88d331b4c9f71499f8cbd6d6, type: 2}
   quantity: 1
   pickupRange: 2
+  pickableID: 
   interactPrompt: {fileID: 0}
   promptText: {fileID: 0}
 --- !u!61 &139368470
@@ -949,6 +950,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: f75d217c88d331b4c9f71499f8cbd6d6, type: 2}
   quantity: 1
   pickupRange: 2
+  pickableID: 
   interactPrompt: {fileID: 0}
   promptText: {fileID: 0}
 --- !u!61 &338703186
@@ -1360,6 +1362,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: f75d217c88d331b4c9f71499f8cbd6d6, type: 2}
   quantity: 1
   pickupRange: 2
+  pickableID: 
   interactPrompt: {fileID: 0}
   promptText: {fileID: 0}
 --- !u!61 &465212692
@@ -1794,9 +1797,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.08333334
+    y: 0.00059336424
     width: 1
-    height: 0.8333333
+    height: 0.9988133
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 34
@@ -25798,6 +25801,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: f75d217c88d331b4c9f71499f8cbd6d6, type: 2}
   quantity: 1
   pickupRange: 2
+  pickableID: 
   interactPrompt: {fileID: 0}
   promptText: {fileID: 0}
 --- !u!61 &1085391363
@@ -26353,6 +26357,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: f75d217c88d331b4c9f71499f8cbd6d6, type: 2}
   quantity: 1
   pickupRange: 2
+  pickableID: 
   interactPrompt: {fileID: 0}
   promptText: {fileID: 0}
 --- !u!61 &1146793695
@@ -26823,6 +26828,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: f75d217c88d331b4c9f71499f8cbd6d6, type: 2}
   quantity: 1
   pickupRange: 2
+  pickableID: 
   interactPrompt: {fileID: 0}
   promptText: {fileID: 0}
 --- !u!61 &1246780665
@@ -27312,6 +27318,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: f75d217c88d331b4c9f71499f8cbd6d6, type: 2}
   quantity: 1
   pickupRange: 2
+  pickableID: 
   interactPrompt: {fileID: 0}
   promptText: {fileID: 0}
 --- !u!61 &1533880113
@@ -27768,6 +27775,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: f75d217c88d331b4c9f71499f8cbd6d6, type: 2}
   quantity: 1
   pickupRange: 2
+  pickableID: 
   interactPrompt: {fileID: 0}
   promptText: {fileID: 0}
 --- !u!61 &1743271460
@@ -28027,6 +28035,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: f75d217c88d331b4c9f71499f8cbd6d6, type: 2}
   quantity: 1
   pickupRange: 2
+  pickableID: 
   interactPrompt: {fileID: 0}
   promptText: {fileID: 0}
 --- !u!61 &1853772676
@@ -28365,6 +28374,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: f75d217c88d331b4c9f71499f8cbd6d6, type: 2}
   quantity: 1
   pickupRange: 2
+  pickableID: 
   interactPrompt: {fileID: 0}
   promptText: {fileID: 0}
 --- !u!61 &1918355826

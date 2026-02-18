@@ -57,6 +57,15 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Show or hide the inventory UI (e.g. hidden in battle scene, visible in overworld).
+    /// </summary>
+    public void SetInventoryVisible(bool visible)
+    {
+        if (inventoryPanel != null)
+            inventoryPanel.SetActive(visible);
+    }
+
     void Start()
     {
         InitializeInventory();

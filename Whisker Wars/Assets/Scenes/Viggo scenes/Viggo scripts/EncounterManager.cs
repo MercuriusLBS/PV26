@@ -60,6 +60,10 @@ public class EncounterManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log($"[EncounterManager] Scene loaded: {scene.name}");
+
+        // Hide inventory in battle (and other non-overworld) scenes, show it again in overworld
+        if (InventoryManager.Instance != null)
+            InventoryManager.Instance.SetInventoryVisible(scene.name == overworldSceneName);
         
         // If we're loading the overworld scene and have a saved position, restore it
         if (scene.name == overworldSceneName && hasSavedPlayerPosition)
@@ -93,6 +97,10 @@ public class EncounterManager : MonoBehaviour
 
         // Save player position before loading battle scene
         SavePlayerPosition();
+
+        // Hide inventory as we switch to battle (it will be shown again when returning to overworld)
+        if (InventoryManager.Instance != null)
+            InventoryManager.Instance.SetInventoryVisible(false);
 
         CurrentEnemyData = enemyData;
         LastDefeatedEnemyID = enemyID;
