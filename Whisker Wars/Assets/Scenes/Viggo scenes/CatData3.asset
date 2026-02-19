@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyName: Enemy3
   enemySprite: {fileID: -2211521708840350790, guid: 14b2bae3129b7874ea99f1fc987fbe10, type: 3}
   enemyAnimatorController: {fileID: 9100000, guid: ee4a114a1bf2afb4fa0a398879ec4d63, type: 2}
-  maxHealth: 100
+  maxHealth: 60
   attack: 15
   evasionChance: 15
   criticalHitChance: 10

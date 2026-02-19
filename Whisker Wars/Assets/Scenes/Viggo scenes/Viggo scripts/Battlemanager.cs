@@ -123,8 +123,11 @@ public class Battlemanager : MonoBehaviour
         // Disable player movement during battle
         DisablePlayerMovement();
 
-        // Reset health and cooldowns if needed
-        player.ResetHealth();
+        // Use saved player health across encounters, or full health if first fight
+        if (EncounterManager.Instance != null && EncounterManager.Instance.HasSavedPlayerHealth)
+            player.SetCurrentHealth(EncounterManager.Instance.SavedPlayerHealth);
+        else
+            player.ResetHealth();
         enemy.ResetHealth();
         playerSpecialCooldownTurns = 0;
 

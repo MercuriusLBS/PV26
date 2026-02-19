@@ -76,6 +76,14 @@ public class Character : MonoBehaviour
         _isGuarding = false;
     }
 
+    /// <summary>
+    /// Sets current health (e.g. when restoring state after combat). Clamped to 0..MaxHealth.
+    /// </summary>
+    public virtual void SetCurrentHealth(int value)
+    {
+        _currentHealth = Mathf.Clamp(value, 0, _maxHealth);
+    }
+
     protected virtual void Die()
     {
         // Override in derived classes if needed

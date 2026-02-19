@@ -23,9 +23,12 @@ public class EncounterManager : MonoBehaviour
     // Collection of collected pickable IDs (per session only - so they don't respawn after returning from combat)
     private HashSet<string> collectedPickableIDs = new HashSet<string>();
     
-    // Player position saving
+    // Player position and health saving (for returning from combat)
     private Vector3 savedPlayerPosition;
     private bool hasSavedPlayerPosition = false;
+    private int savedPlayerHealth;
+    private int savedPlayerMaxHealth;
+    private bool hasSavedPlayerHealth = false;
 
     private void Awake()
     {
@@ -123,15 +126,16 @@ public class EncounterManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Saves the player's current position before battle
+    /// Saves the player's current position before battle.
+    /// Health persistence is handled when the battle ends (in EndEncounter).
     /// </summary>
     private void SavePlayerPosition()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         
-        if (player != null)
+        if (playerObj != null)
         {
-            savedPlayerPosition = player.transform.position;
+            savedPlayerPosition = playerObj.transform.position;
             hasSavedPlayerPosition = true;
             Debug.Log($"[EncounterManager] Saved player position: {savedPlayerPosition}");
         }
@@ -150,6 +154,23 @@ public class EncounterManager : MonoBehaviour
         Debug.Log($"[EncounterManager] EndEncounter called - Player won: {playerWon}");
         
         LastBattleWon = playerWon;
+
+        // If player won, save their current health from battle so we can restore it in overworld
+        if (playerWon)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                Character playerChar = playerObj.GetComponent<Character>();
+                if (playerChar != null)
+                {
+                    savedPlayerHealth = playerChar.CurrentHealth;
+                    savedPlayerMaxHealth = playerChar.MaxHealth;
+                    hasSavedPlayerHealth = true;
+                    Debug.Log($"[EncounterManager] Saved player health after battle: {savedPlayerHealth}/{savedPlayerMaxHealth}");
+                }
+            }
+        }
 
         // If player won, add the defeated enemy to the in-memory collection
         if (playerWon && !string.IsNullOrEmpty(LastDefeatedEnemyID))
@@ -204,8 +225,9 @@ public class EncounterManager : MonoBehaviour
         Debug.Log($"[EncounterManager] Loading game over scene: {gameOverSceneName}");
         Debug.Log($"[EncounterManager] Current Scene: {SceneManager.GetActiveScene().name}");
 
-        // Clear saved position since we're going to game over (not returning to overworld)
+        // Clear saved position and health since we're going to game over (not returning to overworld)
         hasSavedPlayerPosition = false;
+        hasSavedPlayerHealth = false;
 
         // Load game over scene
         if (!string.IsNullOrEmpty(gameOverSceneName))
@@ -228,8 +250,18 @@ public class EncounterManager : MonoBehaviour
         if (player != null)
         {
             player.transform.position = savedPlayerPosition;
-            hasSavedPlayerPosition = false; // Clear the saved position
+            hasSavedPlayerPosition = false;
             Debug.Log($"[EncounterManager] Restored player position to: {savedPlayerPosition}");
+
+            if (hasSavedPlayerHealth)
+            {
+                Character playerChar = player.GetComponent<Character>();
+                if (playerChar != null)
+                {
+                    playerChar.SetCurrentHealth(savedPlayerHealth);
+                    Debug.Log($"[EncounterManager] Restored player health to: {savedPlayerHealth}/{savedPlayerMaxHealth}");
+                }
+            }
         }
         else
         {
@@ -246,6 +278,14 @@ public class EncounterManager : MonoBehaviour
         LastBattleWon = false;
         LastDefeatedEnemyID = string.Empty;
     }
+
+    /// <summary>
+    /// Whether we have saved player health to apply at start of battle (from overworld or previous battle).
+    /// </summary>
+    public bool HasSavedPlayerHealth => hasSavedPlayerHealth;
+
+    public int SavedPlayerHealth => savedPlayerHealth;
+    public int SavedPlayerMaxHealth => savedPlayerMaxHealth;
 
     /// <summary>
     /// Checks if an enemy with the given ID has been defeated

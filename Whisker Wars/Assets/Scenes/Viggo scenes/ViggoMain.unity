@@ -1687,14 +1687,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Character
   _maxHealth: 100
-  _attack: 15
+  _attack: 20
   _characterName: player
   _evasionChance: 20
   _criticalHitChance: 15
   _criticalHitMultiplier: 2
   _damageVariance: 0.2
   _specialAttackMultiplier: 2
-  _specialAttackAccuracy: 50
+  _specialAttackAccuracy: 60
   _guardDamageReduction: 0.85
 --- !u!1 &519420028
 GameObject:
@@ -1796,10 +1796,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.3600697
-    y: 0
-    width: 0.27986062
-    height: 1
+    x: 0
+    y: 0.00081169605
+    width: 1
+    height: 0.9983766
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 34
