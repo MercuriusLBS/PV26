@@ -11,6 +11,10 @@ public class EnemyData : ScriptableObject
     public Sprite enemySprite;
     [Tooltip("Animator Controller for this enemy type (optional)")]
     public RuntimeAnimatorController enemyAnimatorController;
+    [Tooltip("Exact state name in the Animator for attack (e.g. Attack or Enemy 1 Attack). If empty, BattleManager uses \"Enemy X Attack\" from enemy number.")]
+    public string attackStateName = "";
+    [Tooltip("Exact state name in the Animator for idle (e.g. Idle or Enemy 1 Idle). If empty, BattleManager uses \"Enemy X Idle\" from enemy number.")]
+    public string idleStateName = "";
     
     [Header("Stats")]
     public int maxHealth = 100;

@@ -17,6 +17,10 @@ public class Battlemanager : MonoBehaviour
     [Header("Battle Settings")]
     [SerializeField] private float turnDelay = 1f; // Delay between turns for visual feedback
 
+    [Header("Hit Effect")]
+    [Tooltip("Prefab to spawn on the player when the enemy's attack impacts (e.g. HitFx_Player).")]
+    public GameObject playerHitEffectPrefab;
+
     private BattleState currentState = BattleState.PlayerTurn;
     private BattleUI battleUI;
 
@@ -204,58 +208,10 @@ public class Battlemanager : MonoBehaviour
         // Wait for visual feedback
         yield return new WaitForSeconds(turnDelay);
 
-        // Play enemy attack animation
+        // Play enemy attack animation; damage and hit FX are applied at impact time inside the coroutine
         yield return StartCoroutine(PlayEnemyAttackAnimationCoroutine());
 
-        // Perform attack with all combat mechanics
-        AttackResult result = PerformAttack(enemy, player);
-
-        // Handle attack result
-        if (result.evaded)
-        {
-            string message = $"{player.CharacterName} evaded the attack!";
-            Debug.Log(message);
-            if (battleUI != null)
-            {
-                battleUI.ShowBattleLog(message);
-            }
-        }
-        else
-        {
-            // Check if player was guarding and calculate actual damage
-            bool wasGuarding = player.IsGuarding;
-            int originalDamage = result.damage;
-            int actualDamage = wasGuarding 
-                ? Mathf.RoundToInt(originalDamage * (1f - player.GuardDamageReduction)) 
-                : originalDamage;
-            
-            player.TakeDamage(originalDamage);
-            
-            string message;
-            if (wasGuarding)
-            {
-                // Guard reduced damage
-                message = result.criticalHit 
-                    ? $"{enemy.CharacterName} lands a CRITICAL HIT! {player.CharacterName} guards and takes {actualDamage} damage!" 
-                    : $"{enemy.CharacterName} attacks! {player.CharacterName} guards and takes {actualDamage} damage!";
-            }
-            else
-            {
-                message = result.criticalHit 
-                    ? $"{enemy.CharacterName} lands a CRITICAL HIT for {result.damage} damage!" 
-                    : $"{enemy.CharacterName} attacks for {result.damage} damage!";
-            }
-            
-            Debug.Log(message);
-
-            if (battleUI != null)
-            {
-                battleUI.UpdateHealthBars(player, enemy);
-                battleUI.ShowBattleLog(message);
-            }
-        }
-
-        // Check if player is defeated
+        // Check if player is defeated (attack was already resolved at impact)
         if (!player.IsAlive)
         {
             EndBattle(false); // Enemy wins
@@ -639,7 +595,7 @@ public class Battlemanager : MonoBehaviour
     }
 
     /// <summary>
-    /// Coroutine to play the enemy attack animation
+    /// Coroutine to play the enemy attack animation. Damage and hit FX are applied at the impact time for the current enemy.
     /// </summary>
     private IEnumerator PlayEnemyAttackAnimationCoroutine()
     {
@@ -649,65 +605,115 @@ public class Battlemanager : MonoBehaviour
             yield break;
         }
 
-        // Get the Animator component from the enemy GameObject
         Animator animator = enemy.GetComponent<Animator>();
         if (animator == null)
-        {
-            // Try to get it from children
             animator = enemy.GetComponentInChildren<Animator>();
-        }
 
         if (animator == null)
         {
-            Debug.LogWarning($"[BattleManager] Enemy {enemy.gameObject.name} has no Animator component - skipping attack animation");
+            Debug.LogWarning($"[BattleManager] Enemy {enemy.gameObject.name} has no Animator component - resolving attack immediately");
+            ResolveEnemyAttackAtImpact();
             yield break;
         }
 
-        // Check if animator is enabled
         if (!animator.enabled)
         {
             Debug.LogWarning($"[BattleManager] Animator on {enemy.gameObject.name} is disabled! Enabling it...");
             animator.enabled = true;
         }
 
-        // Get the enemy number from EnemyData or enemy name
         int enemyNumber = GetEnemyNumber();
         if (enemyNumber <= 0)
         {
-            Debug.LogWarning($"[BattleManager] Could not determine enemy number from name: {enemy.CharacterName} - skipping attack animation");
+            Debug.LogWarning($"[BattleManager] Could not determine enemy number - resolving attack after short delay");
+            ResolveEnemyAttackAtImpact();
             yield break;
         }
 
-        // Play the attack animation
-        string attackAnimationName = $"Enemy {enemyNumber} Attack";
-        string idleAnimationName = $"Enemy {enemyNumber} Idle";
-        Debug.Log($"[BattleManager] Playing attack animation: {attackAnimationName}");
-        
-        // Play the attack animation by state name
+        // Use state names from EnemyData if set, otherwise fallback to "Enemy X Attack" / "Enemy X Idle"
+        string attackAnimationName = GetEnemyAttackStateName(enemyNumber);
+        string idleAnimationName = GetEnemyIdleStateName(enemyNumber);
+        float impactTime = GetEnemyImpactTime(enemyNumber);
+
+        Debug.Log($"[BattleManager] Playing attack animation: {attackAnimationName}, impact at {impactTime}s");
         animator.Play(attackAnimationName, 0, 0f);
-        
-        // Wait a frame for the animation to start
         yield return null;
-        
-        // Wait for the attack animation to complete
+
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         float animationLength = stateInfo.length;
-        
-        // If animation length is 0 or very small, it might not have found the animation
         if (animationLength <= 0.01f)
         {
-            Debug.LogWarning($"[BattleManager] Animation '{attackAnimationName}' might not exist or is very short. Using default wait time.");
+            Debug.LogWarning($"[BattleManager] Animation '{attackAnimationName}' might not exist. Using default wait.");
             animationLength = 0.5f;
         }
-        
-        // Wait for the attack animation to finish (with a minimum wait time)
-        yield return new WaitForSeconds(Mathf.Max(animationLength, 0.5f));
-        
-        Debug.Log($"[BattleManager] Attack animation completed: {attackAnimationName}");
-        
-        // Play the idle animation to return to idle state
+
+        // Wait until impact frame
+        yield return new WaitForSeconds(impactTime);
+
+        // At impact: resolve attack (damage, evasion, guard) and spawn hit FX on player if hit
+        ResolveEnemyAttackAtImpact();
+
+        // Wait for the rest of the attack animation
+        float remaining = Mathf.Max(0f, animationLength - impactTime);
+        if (remaining > 0f)
+            yield return new WaitForSeconds(remaining);
+
         animator.Play(idleAnimationName, 0, 0f);
-        Debug.Log($"[BattleManager] Returning to idle animation: {idleAnimationName}");
+        Debug.Log($"[BattleManager] Attack animation completed: {attackAnimationName}");
+    }
+
+    /// <summary>
+    /// Called at the impact moment of the enemy attack: applies damage (or evasion), spawns hit FX on player if not evaded.
+    /// </summary>
+    private void ResolveEnemyAttackAtImpact()
+    {
+        AttackResult result = PerformAttack(enemy, player);
+        string message;
+
+        if (result.evaded)
+        {
+            message = $"{player.CharacterName} evaded the attack!";
+            Debug.Log(message);
+            if (battleUI != null)
+                battleUI.ShowBattleLog(message);
+            return;
+        }
+
+        bool wasGuarding = player.IsGuarding;
+        int originalDamage = result.damage;
+        int actualDamage = wasGuarding
+            ? Mathf.RoundToInt(originalDamage * (1f - player.GuardDamageReduction))
+            : originalDamage;
+
+        player.TakeDamage(originalDamage);
+
+        // Spawn hit effect on player at HitPoint
+        if (playerHitEffectPrefab != null && player != null)
+        {
+            Transform spawnPoint = player.HitPoint != null ? player.HitPoint : player.transform;
+            GameObject fx = Instantiate(playerHitEffectPrefab, spawnPoint.position, Quaternion.identity);
+            fx.transform.SetParent(spawnPoint);
+        }
+
+        if (wasGuarding)
+        {
+            message = result.criticalHit
+                ? $"{enemy.CharacterName} lands a CRITICAL HIT! {player.CharacterName} guards and takes {actualDamage} damage!"
+                : $"{enemy.CharacterName} attacks! {player.CharacterName} guards and takes {actualDamage} damage!";
+        }
+        else
+        {
+            message = result.criticalHit
+                ? $"{enemy.CharacterName} lands a CRITICAL HIT for {result.damage} damage!"
+                : $"{enemy.CharacterName} attacks for {result.damage} damage!";
+        }
+        Debug.Log(message);
+
+        if (battleUI != null)
+        {
+            battleUI.UpdateHealthBars(player, enemy);
+            battleUI.ShowBattleLog(message);
+        }
     }
 
     /// <summary>
@@ -739,6 +745,49 @@ public class Battlemanager : MonoBehaviour
         }
 
         return 0;
+    }
+
+    /// <summary>
+    /// Returns the Animator state name for this enemy's attack. Uses EnemyData.attackStateName if set, else "Enemy X Attack".
+    /// </summary>
+    private string GetEnemyAttackStateName(int enemyNumber)
+    {
+        if (EncounterManager.Instance != null && EncounterManager.Instance.CurrentEnemyData != null)
+        {
+            string name = EncounterManager.Instance.CurrentEnemyData.attackStateName;
+            if (!string.IsNullOrWhiteSpace(name))
+                return name.Trim();
+        }
+        return $"Enemy {enemyNumber} Attack";
+    }
+
+    /// <summary>
+    /// Returns the Animator state name for this enemy's idle. Uses EnemyData.idleStateName if set, else "Enemy X Idle".
+    /// </summary>
+    private string GetEnemyIdleStateName(int enemyNumber)
+    {
+        if (EncounterManager.Instance != null && EncounterManager.Instance.CurrentEnemyData != null)
+        {
+            string name = EncounterManager.Instance.CurrentEnemyData.idleStateName;
+            if (!string.IsNullOrWhiteSpace(name))
+                return name.Trim();
+        }
+        return $"Enemy {enemyNumber} Idle";
+    }
+
+    /// <summary>
+    /// Returns the time in seconds when the enemy's attack animation hits (for syncing hit FX and damage).
+    /// Enemy 1: 0.27s, Enemy 2: 0.21s, Enemy 3: 0.39s. Add more entries as needed.
+    /// </summary>
+    private float GetEnemyImpactTime(int enemyNumber)
+    {
+        switch (enemyNumber)
+        {
+            case 1: return 0.27f;
+            case 2: return 0.21f;
+            case 3: return 0.39f;
+            default: return 0.25f;
+        }
     }
 
     /// <summary>

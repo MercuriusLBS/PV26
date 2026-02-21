@@ -20,6 +20,10 @@ public class Character : MonoBehaviour
     [Header("Defense")]
     [SerializeField] [Range(0f, 1f)] private float _guardDamageReduction = 0.85f; // Percentage of damage reduced when guarding (0-1)
 
+    [Header("Hit Effect (for combat)")]
+    [Tooltip("Spawn position for hit FX when this character is hit. Assign the HitPoint child on the player.")]
+    public Transform hitPoint;
+
     private int _currentHealth;
     private bool _isGuarding = false;
 
@@ -35,6 +39,8 @@ public class Character : MonoBehaviour
     public float SpecialAttackAccuracy => _specialAttackAccuracy;
     public float GuardDamageReduction => _guardDamageReduction;
     public bool IsGuarding => _isGuarding;
+    /// <summary>World position/transform where hit FX should spawn. Can be null.</summary>
+    public Transform HitPoint => hitPoint;
 
     public bool IsAlive => _currentHealth > 0;
 
