@@ -193,6 +193,7 @@ public class Battlemanager : MonoBehaviour
                 GameObject fx = Instantiate(playerHitEffectPrefab, spawnPoint.position, Quaternion.identity);
                 fx.transform.SetParent(spawnPoint);
             }
+            enemy.FlashDamage();
 
             message = result.criticalHit
                 ? $"{player.CharacterName} lands a CRITICAL HIT for {result.damage} damage!"
@@ -708,6 +709,7 @@ public class Battlemanager : MonoBehaviour
             GameObject fx = Instantiate(playerHitEffectPrefab, spawnPoint.position, Quaternion.identity);
             fx.transform.SetParent(spawnPoint);
         }
+        player.FlashDamage();
 
         if (wasGuarding)
         {

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class Character : MonoBehaviour
 {
@@ -24,6 +25,12 @@ public class Character : MonoBehaviour
     [Tooltip("Spawn position for hit FX when this character is hit. Assign the HitPoint child on the player.")]
     public Transform hitPoint;
 
+    [Header("Damage Flash")]
+    [Tooltip("Red tint applied when taking damage (keeps sprite detail visible).")]
+    public Color damageFlashColor = new Color(1f, 0.35f, 0.35f);
+    [Tooltip("Duration of the damage flash in seconds.")]
+    public float damageFlashDuration = 0.15f;
+
     private int _currentHealth;
     private bool _isGuarding = false;
 
@@ -43,6 +50,65 @@ public class Character : MonoBehaviour
     public Transform HitPoint => hitPoint;
 
     public bool IsAlive => _currentHealth > 0;
+
+    /// <summary>
+    /// Plays a red flash on this character's sprite(s) as a filter so details remain visible. Call when damage is applied (e.g. with hit effect).
+    /// </summary>
+    public void FlashDamage()
+    {
+        StartCoroutine(FlashDamageCoroutine());
+    }
+
+    private IEnumerator FlashDamageCoroutine()
+    {
+        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
+        if (renderers == null || renderers.Length == 0)
+            yield break;
+
+        float half = Mathf.Max(0.01f, damageFlashDuration * 0.5f);
+        float elapsed = 0f;
+
+        // Flash to red tint
+        while (elapsed < half)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / half);
+            Color c = Color.Lerp(Color.white, damageFlashColor, t);
+            foreach (var sr in renderers)
+            {
+                if (sr != null && sr.enabled)
+                    sr.color = c;
+            }
+            yield return null;
+        }
+
+        foreach (var sr in renderers)
+        {
+            if (sr != null && sr.enabled)
+                sr.color = damageFlashColor;
+        }
+
+        elapsed = 0f;
+        // Back to white
+        while (elapsed < half)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / half);
+            Color c = Color.Lerp(damageFlashColor, Color.white, t);
+            foreach (var sr in renderers)
+            {
+                if (sr != null && sr.enabled)
+                    sr.color = c;
+            }
+            yield return null;
+        }
+
+        foreach (var sr in renderers)
+        {
+            if (sr != null && sr.enabled)
+                sr.color = Color.white;
+        }
+    }
 
     private void Awake()
     {
