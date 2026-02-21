@@ -18,8 +18,10 @@ public class Battlemanager : MonoBehaviour
     [SerializeField] private float turnDelay = 1f; // Delay between turns for visual feedback
 
     [Header("Hit Effect")]
-    [Tooltip("Prefab to spawn on the player when the enemy's attack impacts (e.g. HitFx_Player).")]
+    [Tooltip("Prefab to spawn when a character is hit (used on both player and enemy). e.g. HitFx_Player.")]
     public GameObject playerHitEffectPrefab;
+    [Tooltip("Seconds after player attack starts before impact and hit FX (used when player attack animation is added).")]
+    public float playerAttackImpactTime = 0.25f;
 
     private BattleState currentState = BattleState.PlayerTurn;
     private BattleUI battleUI;
@@ -155,29 +157,48 @@ public class Battlemanager : MonoBehaviour
             return;
         }
 
-        // Perform attack with all combat mechanics
-        AttackResult result = PerformAttack(player, enemy);
+        if (battleUI != null)
+            battleUI.SetActionMenuActive(false);
 
-        // Handle attack result
+        StartCoroutine(PlayerAttackCoroutine());
+    }
+
+    /// <summary>
+    /// Waits playerAttackImpactTime (0.25s), then resolves attack and spawns hit FX on enemy. Add player attack animation at the start when ready.
+    /// </summary>
+    private IEnumerator PlayerAttackCoroutine()
+    {
+        // When you add the player attack animation, play it here, e.g.:
+        // Animator playerAnim = player.GetComponent<Animator>(); if (playerAnim != null) playerAnim.Play("Attack", 0, 0f);
+        yield return new WaitForSeconds(playerAttackImpactTime);
+
+        AttackResult result = PerformAttack(player, enemy);
+        string message;
+
         if (result.evaded)
         {
-            string message = $"{enemy.CharacterName} evaded the attack!";
+            message = $"{enemy.CharacterName} evaded the attack!";
             Debug.Log(message);
             if (battleUI != null)
-            {
                 battleUI.ShowBattleLog(message);
-            }
         }
         else
         {
             enemy.TakeDamage(result.damage);
-            
-            string message = result.criticalHit 
-                ? $"{player.CharacterName} lands a CRITICAL HIT for {result.damage} damage!" 
+
+            // Spawn hit effect on enemy at HitPoint
+            if (playerHitEffectPrefab != null && enemy != null)
+            {
+                Transform spawnPoint = enemy.HitPoint != null ? enemy.HitPoint : enemy.transform;
+                GameObject fx = Instantiate(playerHitEffectPrefab, spawnPoint.position, Quaternion.identity);
+                fx.transform.SetParent(spawnPoint);
+            }
+
+            message = result.criticalHit
+                ? $"{player.CharacterName} lands a CRITICAL HIT for {result.damage} damage!"
                 : $"{player.CharacterName} attacks for {result.damage} damage!";
-            
             Debug.Log(message);
-            
+
             if (battleUI != null)
             {
                 battleUI.UpdateHealthBars(player, enemy);
@@ -185,17 +206,10 @@ public class Battlemanager : MonoBehaviour
             }
         }
 
-        // Check if enemy is defeated
         if (!enemy.IsAlive)
         {
-            EndBattle(true); // Player wins
-            return;
-        }
-
-        // Disable action menu and switch to enemy turn
-        if (battleUI != null)
-        {
-            battleUI.SetActionMenuActive(false);
+            EndBattle(true);
+            yield break;
         }
 
         StartCoroutine(EnemyTurnCoroutine());
