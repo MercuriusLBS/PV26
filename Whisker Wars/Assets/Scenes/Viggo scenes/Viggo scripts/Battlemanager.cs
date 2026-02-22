@@ -193,6 +193,24 @@ public class Battlemanager : MonoBehaviour
                 GameObject fx = Instantiate(playerHitEffectPrefab, spawnPoint.position, Quaternion.identity);
                 fx.transform.SetParent(spawnPoint);
             }
+
+            if (!enemy.IsAlive)
+            {
+                // Killing blow: white flash then fade out
+                message = result.criticalHit
+                    ? $"{player.CharacterName} lands a CRITICAL HIT for {result.damage} damage!"
+                    : $"{player.CharacterName} attacks for {result.damage} damage!";
+                Debug.Log(message);
+                if (battleUI != null)
+                {
+                    battleUI.UpdateHealthBars(player, enemy);
+                    battleUI.ShowBattleLog(message);
+                }
+                yield return enemy.StartCoroutine(enemy.DeathFlashAndFadeCoroutine());
+                EndBattle(true);
+                yield break;
+            }
+
             enemy.FlashDamage();
 
             message = result.criticalHit
@@ -205,12 +223,6 @@ public class Battlemanager : MonoBehaviour
                 battleUI.UpdateHealthBars(player, enemy);
                 battleUI.ShowBattleLog(message);
             }
-        }
-
-        if (!enemy.IsAlive)
-        {
-            EndBattle(true);
-            yield break;
         }
 
         StartCoroutine(EnemyTurnCoroutine());
@@ -269,29 +281,60 @@ public class Battlemanager : MonoBehaviour
             return;
         }
 
+        if (battleUI != null)
+            battleUI.SetActionMenuActive(false);
+
+        StartCoroutine(PlayerSpecialAttackCoroutine());
+    }
+
+    private IEnumerator PlayerSpecialAttackCoroutine()
+    {
         // Perform special attack with lower accuracy
         AttackResult result = PerformAttack(player, enemy, isSpecialAttack: true);
+        string message;
 
-        // Handle attack result
         if (result.evaded)
         {
-            string message = $"{player.CharacterName}'s special attack missed!";
+            message = $"{player.CharacterName}'s special attack missed!";
             Debug.Log(message);
             if (battleUI != null)
-            {
                 battleUI.ShowBattleLog(message);
-            }
         }
         else
         {
             enemy.TakeDamage(result.damage);
-            
-            string message = result.criticalHit 
-                ? $"{player.CharacterName} lands a CRITICAL SPECIAL ATTACK for {result.damage} damage!" 
+
+            // Spawn hit effect on enemy at HitPoint
+            if (playerHitEffectPrefab != null && enemy != null)
+            {
+                Transform spawnPoint = enemy.HitPoint != null ? enemy.HitPoint : enemy.transform;
+                GameObject fx = Instantiate(playerHitEffectPrefab, spawnPoint.position, Quaternion.identity);
+                fx.transform.SetParent(spawnPoint);
+            }
+
+            if (!enemy.IsAlive)
+            {
+                message = result.criticalHit
+                    ? $"{player.CharacterName} lands a CRITICAL SPECIAL ATTACK for {result.damage} damage!"
+                    : $"{player.CharacterName} uses SPECIAL ATTACK for {result.damage} damage!";
+                Debug.Log(message);
+                if (battleUI != null)
+                {
+                    battleUI.UpdateHealthBars(player, enemy);
+                    battleUI.ShowBattleLog(message);
+                }
+                yield return enemy.StartCoroutine(enemy.DeathFlashAndFadeCoroutine());
+                playerSpecialCooldownTurns = 3;
+                EndBattle(true);
+                yield break;
+            }
+
+            enemy.FlashDamage();
+
+            message = result.criticalHit
+                ? $"{player.CharacterName} lands a CRITICAL SPECIAL ATTACK for {result.damage} damage!"
                 : $"{player.CharacterName} uses SPECIAL ATTACK for {result.damage} damage!";
-            
             Debug.Log(message);
-            
             if (battleUI != null)
             {
                 battleUI.UpdateHealthBars(player, enemy);
@@ -299,22 +342,7 @@ public class Battlemanager : MonoBehaviour
             }
         }
 
-        // Put special attack on cooldown (3 player turns)
         playerSpecialCooldownTurns = 3;
-
-        // Check if enemy is defeated
-        if (!enemy.IsAlive)
-        {
-            EndBattle(true); // Player wins
-            return;
-        }
-
-        // Disable action menu and switch to enemy turn
-        if (battleUI != null)
-        {
-            battleUI.SetActionMenuActive(false);
-        }
-
         StartCoroutine(EnemyTurnCoroutine());
     }
 
@@ -614,6 +642,8 @@ public class Battlemanager : MonoBehaviour
     /// </summary>
     private IEnumerator PlayEnemyAttackAnimationCoroutine()
     {
+        bool playerDied;
+
         if (enemy == null)
         {
             Debug.LogWarning("[BattleManager] Cannot play enemy attack animation - enemy is null");
@@ -627,7 +657,9 @@ public class Battlemanager : MonoBehaviour
         if (animator == null)
         {
             Debug.LogWarning($"[BattleManager] Enemy {enemy.gameObject.name} has no Animator component - resolving attack immediately");
-            ResolveEnemyAttackAtImpact();
+            playerDied = ResolveEnemyAttackAtImpact();
+            if (playerDied)
+                yield return player.StartCoroutine(player.DeathFlashAndFadeCoroutine());
             yield break;
         }
 
@@ -641,7 +673,9 @@ public class Battlemanager : MonoBehaviour
         if (enemyNumber <= 0)
         {
             Debug.LogWarning($"[BattleManager] Could not determine enemy number - resolving attack after short delay");
-            ResolveEnemyAttackAtImpact();
+            playerDied = ResolveEnemyAttackAtImpact();
+            if (playerDied)
+                yield return player.StartCoroutine(player.DeathFlashAndFadeCoroutine());
             yield break;
         }
 
@@ -666,7 +700,9 @@ public class Battlemanager : MonoBehaviour
         yield return new WaitForSeconds(impactTime);
 
         // At impact: resolve attack (damage, evasion, guard) and spawn hit FX on player if hit
-        ResolveEnemyAttackAtImpact();
+        playerDied = ResolveEnemyAttackAtImpact();
+        if (playerDied)
+            yield return player.StartCoroutine(player.DeathFlashAndFadeCoroutine());
 
         // Wait for the rest of the attack animation
         float remaining = Mathf.Max(0f, animationLength - impactTime);
@@ -679,8 +715,9 @@ public class Battlemanager : MonoBehaviour
 
     /// <summary>
     /// Called at the impact moment of the enemy attack: applies damage (or evasion), spawns hit FX on player if not evaded.
+    /// Returns true if the player died (killing blow); caller should run DeathFlashAndFadeCoroutine then EndBattle.
     /// </summary>
-    private void ResolveEnemyAttackAtImpact()
+    private bool ResolveEnemyAttackAtImpact()
     {
         AttackResult result = PerformAttack(enemy, player);
         string message;
@@ -691,7 +728,7 @@ public class Battlemanager : MonoBehaviour
             Debug.Log(message);
             if (battleUI != null)
                 battleUI.ShowBattleLog(message);
-            return;
+            return false;
         }
 
         bool wasGuarding = player.IsGuarding;
@@ -709,6 +746,22 @@ public class Battlemanager : MonoBehaviour
             GameObject fx = Instantiate(playerHitEffectPrefab, spawnPoint.position, Quaternion.identity);
             fx.transform.SetParent(spawnPoint);
         }
+
+        if (!player.IsAlive)
+        {
+            // Killing blow: no red flash; caller will run white flash + fade
+            message = result.criticalHit
+                ? $"{enemy.CharacterName} lands a CRITICAL HIT for {result.damage} damage!"
+                : $"{enemy.CharacterName} attacks for {result.damage} damage!";
+            Debug.Log(message);
+            if (battleUI != null)
+            {
+                battleUI.UpdateHealthBars(player, enemy);
+                battleUI.ShowBattleLog(message);
+            }
+            return true;
+        }
+
         player.FlashDamage();
 
         if (wasGuarding)
@@ -730,6 +783,7 @@ public class Battlemanager : MonoBehaviour
             battleUI.UpdateHealthBars(player, enemy);
             battleUI.ShowBattleLog(message);
         }
+        return false;
     }
 
     /// <summary>

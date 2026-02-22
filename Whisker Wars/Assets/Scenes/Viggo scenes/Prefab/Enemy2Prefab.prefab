@@ -230,3 +230,9 @@ MonoBehaviour:
   _specialAttackMultiplier: 2
   _specialAttackAccuracy: 50
   _guardDamageReduction: 0.85
+  hitPoint: {fileID: 0}
+  damageFlashColor: {r: 1, g: 0.35, b: 0.35, a: 1}
+  damageFlashDuration: 0.15
+  deathFlashOpacity: 0.7
+  deathFadeDelay: 0.5
+  deathFadeDuration: 0.8

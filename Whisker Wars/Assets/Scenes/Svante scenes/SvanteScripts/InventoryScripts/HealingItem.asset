@@ -17,5 +17,5 @@ MonoBehaviour:
   description: 
   maxStack: 12
   itemType: 0
-  healAmount: 30
+  healAmount: 40
   canUseInBattle: 1

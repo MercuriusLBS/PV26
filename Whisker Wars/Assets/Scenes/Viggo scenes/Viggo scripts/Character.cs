@@ -31,6 +31,14 @@ public class Character : MonoBehaviour
     [Tooltip("Duration of the damage flash in seconds.")]
     public float damageFlashDuration = 0.15f;
 
+    [Header("Death (Killing Blow)")]
+    [Tooltip("Opacity of the white color held during death (0-1). e.g. 0.7 = 70%.")]
+    [Range(0f, 1f)] public float deathFlashOpacity = 0.7f;
+    [Tooltip("Seconds after the hit before the fade-out starts.")]
+    public float deathFadeDelay = 0.5f;
+    [Tooltip("Duration of the fade-out to nothing.")]
+    public float deathFadeDuration = 0.4f;
+
     private int _currentHealth;
     private bool _isGuarding = false;
 
@@ -107,6 +115,51 @@ public class Character : MonoBehaviour
         {
             if (sr != null && sr.enabled)
                 sr.color = Color.white;
+        }
+    }
+
+    /// <summary>
+    /// Killing blow effect: switch to white at set opacity (held), wait delay, then fade out to nothing. Returns when complete so caller can yield then EndBattle.
+    /// </summary>
+    public IEnumerator DeathFlashAndFadeCoroutine()
+    {
+        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
+        if (renderers == null || renderers.Length == 0)
+            yield break;
+
+        float delay = Mathf.Max(0f, deathFadeDelay);
+        float fadeDur = Mathf.Max(0.01f, deathFadeDuration);
+        float flashAlpha = Mathf.Clamp01(deathFlashOpacity);
+
+        // Switch to white at set opacity and hold (no flash animation; color stays during delay and into fade)
+        Color whiteHold = new Color(1f, 1f, 1f, flashAlpha);
+        foreach (var sr in renderers)
+        {
+            if (sr != null && sr.enabled)
+                sr.color = whiteHold;
+        }
+        yield return new WaitForSeconds(delay);
+
+        // Fade out from current opacity to 0
+        float elapsed = 0f;
+        while (elapsed < fadeDur)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / fadeDur);
+            float a = Mathf.Lerp(flashAlpha, 0f, t);
+            Color c = new Color(1f, 1f, 1f, a);
+            foreach (var sr in renderers)
+            {
+                if (sr != null && sr.enabled)
+                    sr.color = c;
+            }
+            yield return null;
+        }
+
+        foreach (var sr in renderers)
+        {
+            if (sr != null && sr.enabled)
+                sr.color = new Color(1f, 1f, 1f, 0f);
         }
     }
 
