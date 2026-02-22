@@ -16,7 +16,7 @@ MonoBehaviour:
   enemySprite: {fileID: -2211521708840350790, guid: 14b2bae3129b7874ea99f1fc987fbe10, type: 3}
   enemyAnimatorController: {fileID: 9100000, guid: ee4a114a1bf2afb4fa0a398879ec4d63, type: 2}
   attackStateName: Enemy 3 Attack
-  idleStateName: Enemy 1 Idle
+  idleStateName: Enemy 3 Idle
   maxHealth: 60
   attack: 15
   evasionChance: 15

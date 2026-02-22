@@ -30,6 +30,9 @@ public class EncounterManager : MonoBehaviour
     private int savedPlayerMaxHealth;
     private bool hasSavedPlayerHealth = false;
 
+    // Popup: show "first defeat - whisker info" when returning to overworld after first victory
+    private bool pendingFirstDefeatPopup = false;
+
     private void Awake()
     {
         Debug.Log("[EncounterManager] Awake called");
@@ -177,6 +180,9 @@ public class EncounterManager : MonoBehaviour
         {
             defeatedEnemyIDs.Add(LastDefeatedEnemyID);
             Debug.Log($"[EncounterManager] Added defeated enemy '{LastDefeatedEnemyID}' to collection. Total defeated: {defeatedEnemyIDs.Count}");
+            // First victory ever — show whisker info popup when we're back in overworld
+            if (defeatedEnemyIDs.Count == 1)
+                pendingFirstDefeatPopup = true;
         }
 
         Debug.Log($"[EncounterManager] Encounter ended. Player won: {playerWon}, Defeated Enemy ID: {LastDefeatedEnemyID}");
@@ -261,6 +267,13 @@ public class EncounterManager : MonoBehaviour
                     playerChar.SetCurrentHealth(savedPlayerHealth);
                     Debug.Log($"[EncounterManager] Restored player health to: {savedPlayerHealth}/{savedPlayerMaxHealth}");
                 }
+            }
+
+            // Show first-defeat whisker info popup (only once per session)
+            if (pendingFirstDefeatPopup && PopupManager.Instance != null)
+            {
+                pendingFirstDefeatPopup = false;
+                PopupManager.Instance.TryShowFirstDefeatWhiskerInfo();
             }
         }
         else

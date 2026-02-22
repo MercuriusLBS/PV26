@@ -100,6 +100,10 @@ public class BattleLootDropper : MonoBehaviour
         InventoryManager.Instance.AddItem(whiskerItem, whiskerQuantity);
 
         Debug.Log($"[BattleLootDropper] Awarded {whiskerQuantity}x '{whiskerItem.itemName}' to inventory!");
+
+        // First time reaching 10+ whiskers — show milestone popup (only once per session)
+        if (PopupManager.Instance != null && InventoryManager.Instance.GetItemCount(whiskerItem) >= 10)
+            PopupManager.Instance.TryShowTenWhiskersMilestone();
     }
 
     /// <summary>
